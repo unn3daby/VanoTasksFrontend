@@ -49,11 +49,16 @@
 
 <script setup lang="ts">
 import { ref, Ref } from 'vue';
+interface PasswordModel {
+  value: string;
+  type: 'password' | 'text';
+}
 const login: Ref<string> = ref('');
-const password: Ref<Record<string, 'password' | 'text'>> = ref({
+const password: Ref<PasswordModel> = ref({
   value: '',
   type: 'password',
 });
+console.log(import.meta.env);
 </script>
 
 <style scoped lang="scss"></style>

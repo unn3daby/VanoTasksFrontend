@@ -19,7 +19,9 @@
         outlined
       />
       <q-input
+        v-for="(password, i) in passwords"
         clearable
+        :key="i"
         v-model="password.value"
         class="q-mb-md"
         label="Введите пароль"
@@ -33,27 +35,6 @@
               password.type === 'password'
                 ? (password.type = 'text')
                 : (password.type = 'password')
-            "
-            class="q-ml-sm cursor-pointer"
-          ></q-icon>
-        </template>
-      </q-input>
-      <q-input
-        clearable
-        v-model="secondPassword.value"
-        label="Повторите пароль"
-        outlined
-        :type="secondPassword.type"
-      >
-        <template #append>
-          <q-icon
-            :name="
-              secondPassword.type === 'password' ? 'mdi-eye' : 'mdi-eye-off'
-            "
-            @click="
-              secondPassword.type === 'password'
-                ? (secondPassword.type = 'text')
-                : (secondPassword.type = 'password')
             "
             class="q-ml-sm cursor-pointer"
           ></q-icon>
@@ -78,15 +59,21 @@
 
 <script setup lang="ts">
 import { ref, Ref } from 'vue';
+interface PasswordModel {
+  value: string;
+  type: 'password' | 'text';
+}
 const login: Ref<string> = ref('');
-const password: Ref<Record<string, 'password' | 'text'>> = ref({
-  value: '',
-  type: 'password',
-});
-const secondPassword: Ref<Record<string, 'password' | 'text'>> = ref({
-  value: '',
-  type: 'password',
-});
+const passwords: Ref<Array<PasswordModel>> = ref([
+  {
+    value: '',
+    type: 'password',
+  },
+  {
+    value: '',
+    type: 'password',
+  },
+]);
 const email: Ref<string> = ref('');
 </script>
 
