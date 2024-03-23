@@ -3,32 +3,41 @@ import { RouteRecordRaw } from 'vue-router';
 const routes: RouteRecordRaw[] = [
   {
     path: '/',
+    name: 'home',
     component: () => import('layouts/MainLayout.vue'),
     meta: { requiresAuth: true },
-    children: [{ path: '', component: () => import('pages/IndexPage.vue') }],
+    children: [
+      {
+        path: '',
+        name: 'home-page',
+        component: () => import('pages/IndexPage.vue'),
+      },
+    ],
   },
   {
     path: '/auth',
     name: 'auth',
-    meta: { requiresAuth: false },
-    redirect: { name: 'login' },
+    meta: { onlyNotAuth: true },
+    redirect: { name: 'auth-page' },
     component: () => import('layouts/ClearLayout.vue'),
     children: [
       {
-        path: '/',
+        path: '',
+        name: 'auth-page',
+        redirect: { name: 'login' },
         component: () => import('pages/AuthOrRegPage.vue'),
-        meta: { requiresAuth: false },
+        meta: { onlyNotAuth: true },
         children: [
           {
             name: 'login',
-            path: 'login',
-            meta: { requiresAuth: false },
+            path: '/login',
+            meta: { onlyNotAuth: true },
             component: () => import('src/components/LoginCard.vue'),
           },
           {
             name: 'register',
-            path: 'register',
-            meta: { requiresAuth: false },
+            path: '/register',
+            meta: { onlyNotAuth: true },
             component: () => import('src/components/RegistrationCard.vue'),
           },
         ],

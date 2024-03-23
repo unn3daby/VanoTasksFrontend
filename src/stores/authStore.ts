@@ -32,6 +32,15 @@ export const useAuthStore = defineStore('auth', {
     async logout() {
       try {
         await authService.post<UserModel>('/auth/logout');
+        this.userData = {
+          id: 0,
+          email: '',
+          is_active: false,
+          is_superuser: false,
+          is_verified: false,
+          username: '',
+          role_id: 0,
+        };
       } catch (error) {
         console.error(error);
       }
