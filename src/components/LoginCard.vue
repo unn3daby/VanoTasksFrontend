@@ -6,7 +6,7 @@
     <q-card-section class="q-pt-none">
       <q-input
         clearable
-        v-model="login"
+        v-model="username"
         class="q-mb-md"
         label="Введите логин"
         outlined
@@ -32,7 +32,12 @@
       </q-input>
     </q-card-section>
     <q-card-actions class="q-pa-md">
-      <q-btn unelevated color="primary" class="full-width submit-button">
+      <q-btn
+        unelevated
+        color="primary"
+        class="full-width submit-button"
+        @click="onLogin"
+      >
         <span class="text-bold">Войти</span>
       </q-btn>
       <div class="text-bold caption q-mt-md">
@@ -49,16 +54,36 @@
 
 <script setup lang="ts">
 import { ref, Ref } from 'vue';
+import { useAuthStore } from 'stores/authStore';
+import { useRouter } from 'vue-router';
+
 interface PasswordModel {
   value: string;
   type: 'password' | 'text';
 }
-const login: Ref<string> = ref('');
+
+const authStore = useAuthStore();
+const router = useRouter();
+
+const username: Ref<string> = ref('');
+
 const password: Ref<PasswordModel> = ref({
   value: '',
   type: 'password',
 });
-console.log(import.meta.env);
+
+const onLogin = async () => {
+  try {
+    await authStore.login({
+      username: username.value,
+      password: password.value.value,
+    });
+    await authStore.getUserData();
+    await router.push('/');
+  } catch (error) {
+    console.error(error);
+  }
+};
 </script>
 
 <style scoped lang="scss"></style>

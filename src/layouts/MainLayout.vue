@@ -13,7 +13,15 @@
 
         <q-toolbar-title> Quasar App </q-toolbar-title>
 
-        <div>Quasar v{{ $q.version }}</div>
+        <q-btn
+          @click="
+            async () => {
+              await authStore.logout();
+              await $router.push({ name: 'auth' });
+            }
+          "
+          icon="mdi-exit-to-app"
+        ></q-btn>
       </q-toolbar>
     </q-header>
 
@@ -40,6 +48,9 @@ import { ref } from 'vue';
 import EssentialLink, {
   EssentialLinkProps,
 } from 'components/EssentialLink.vue';
+import { useAuthStore } from 'src/stores/authStore';
+
+const authStore = useAuthStore();
 
 const essentialLinks: EssentialLinkProps[] = [
   {
