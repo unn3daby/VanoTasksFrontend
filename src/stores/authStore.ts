@@ -2,7 +2,6 @@ import { defineStore } from 'pinia';
 import { UserModel } from 'src/models/UserModel';
 import { RegUserModel } from 'src/models/RegUserModel';
 import { authService } from 'src/api/authService';
-import { Axios, AxiosError } from 'axios';
 
 export const useAuthStore = defineStore('auth', {
   state: (): { userData: UserModel } => ({
@@ -18,14 +17,12 @@ export const useAuthStore = defineStore('auth', {
   }),
   actions: {
     async login(payload: { username: string; password: string }) {
-      console.log('login');
       const formData = new FormData();
       formData.append('username', payload.username);
       formData.append('password', payload.password);
       try {
         await authService.post<UserModel>('/auth/login', formData);
       } catch (error) {
-        console.log(error);
         throw new Error(`${error}`);
       }
     },
@@ -42,6 +39,7 @@ export const useAuthStore = defineStore('auth', {
           role_id: 0,
         };
       } catch (error) {
+        // eslint-disable-next-line no-console
         console.error(error);
       }
     },
@@ -52,12 +50,10 @@ export const useAuthStore = defineStore('auth', {
           role_id: 0,
         });
       } catch (error) {
-        console.log(error);
         throw new Error(`${error}`);
       }
     },
     async getUserData() {
-      console.log('getdata');
       try {
         const { data } = await authService.get('/users/id');
         this.userData = data;

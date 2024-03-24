@@ -3,5 +3,6 @@
 </template>
 
 <script setup lang="ts">
-localStorage.setItem('pidaras', 'value');
+import Notification from 'src/utils/Notification';
+Notification.error('Error');
 </script>

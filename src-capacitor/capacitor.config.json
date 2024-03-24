@@ -4,7 +4,7 @@
   "webDir": "www",
   "server": {
     "hostname": "localhost:8080",
-    "url": "http://172.21.176.1:9500"
+    "url": "http://192.168.1.112:9500"
   },
   "plugins": {
     "CapacitorCookies": {

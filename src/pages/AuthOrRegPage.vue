@@ -1,7 +1,7 @@
 <template>
-  <q-page>
+  <div>
     <router-view />
-  </q-page>
+  </div>
 </template>
 
 <script setup lang="ts"></script>
