@@ -41,6 +41,6 @@ const meta = ref<Meta>({
 });
 
 onMounted(async () => {
-  await authService.get('http://localhost:8080/projects/');
+  await authService.get('/projects');
 });
 </script>

@@ -9,7 +9,7 @@ const authService = axios.create({
 authService.interceptors.response.use(
   (res) => res,
   (err) => {
-    const errorMessage = err.response.statusText;
+    /* const errorMessage = err.response.statusText;
     const code = err.response.status;
     switch (code) {
       case 401: {
@@ -17,11 +17,11 @@ authService.interceptors.response.use(
           console.log(err.config);
         }
         break;
-      }
+      }ц
       default:
         break;
-    }
-    return Promise.reject(err.response.data.detail ?? err.response);
+    } */
+    return Promise.reject(err);
   }
 );
 export { authService };

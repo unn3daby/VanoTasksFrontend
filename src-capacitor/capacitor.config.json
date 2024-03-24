@@ -1,0 +1,17 @@
+{
+  "appId": "org.capacitor.quasar.app",
+  "appName": "Vano Tasks",
+  "webDir": "www",
+  "server": {
+    "hostname": "localhost:8080",
+    "url": "http://172.21.176.1:9500"
+  },
+  "plugins": {
+    "CapacitorCookies": {
+      "enabled": true
+    },
+    "CapacitorHttp": {
+      "enabled": true
+    }
+  }
+}

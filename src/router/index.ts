@@ -38,18 +38,12 @@ export default route(function (/* { store, ssrContext } */) {
     const authStore = useAuthStore();
     const requiresAuth = to.matched.some((record) => record.meta.requiresAuth);
     const onlyNotAuth = to.matched.some((record) => record.meta.onlyNotAuth);
-    console.log('reqAuth: ', requiresAuth);
-    console.log('onlyNotAuth: ', onlyNotAuth);
-    console.log('userId:', authStore.userData.id);
 
     if (requiresAuth && !authStore.userData.id) {
       next({ name: 'auth' });
-      console.error('requiresAuth with not auth');
     } else if (onlyNotAuth && authStore.userData.id) {
-      console.error('onlyNotAuth with auth');
       next('/');
     } else {
-      console.error('all');
       next();
     }
   });
