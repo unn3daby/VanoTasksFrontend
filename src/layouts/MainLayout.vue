@@ -42,15 +42,14 @@
             :to="{ name: 'home-page' }"
           >
             <q-item-section avatar>
-              <q-icon name="inbox" />
+              <q-icon name="bi-list-task" />
             </q-item-section>
 
             <q-item-section> Задачи </q-item-section>
           </q-item>
-
           <q-item clickable v-ripple class="rounded-borders q-mb-sm">
             <q-item-section avatar>
-              <q-icon name="star" />
+              <q-icon name="bi-folder2" />
             </q-item-section>
 
             <q-item-section> Проекты </q-item-section>
@@ -58,7 +57,7 @@
 
           <q-item clickable v-ripple class="rounded-borders q-mb-sm">
             <q-item-section avatar>
-              <q-icon name="send" />
+              <q-icon name="bi-people" />
             </q-item-section>
 
             <q-item-section> Сотрудники </q-item-section>
@@ -67,7 +66,7 @@
       </q-scroll-area>
       <q-item clickable class="settings rounded-borders">
         <q-item-section avatar>
-          <q-icon name="mdi-cog" />
+          <q-icon name="bi-gear" />
         </q-item-section>
 
         <q-item-section> Настройки </q-item-section></q-item

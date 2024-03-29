@@ -74,16 +74,14 @@ const password: Ref<PasswordModel> = ref({
 
 const onLogin = async () => {
   try {
-    console.log(1);
     await authStore.login({
       username: username.value,
       password: password.value.value,
     });
-    console.log(123);
     await authStore.getUserData();
-    console.log(321);
     await router.push('/');
   } catch (error) {
+    // eslint-disable-next-line no-console
     console.error(error);
   }
 };
