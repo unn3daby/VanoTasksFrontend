@@ -20,7 +20,7 @@
     <q-drawer
       v-model="leftDrawerOpen"
       show-if-above
-      :width="200"
+      :width="250"
       :breakpoint="500"
       class="bg-white"
     >
@@ -39,7 +39,7 @@
             clickable
             v-ripple
             class="rounded-borders q-mb-sm"
-            :to="{ name: 'home-page' }"
+            :to="{ name: 'tasks-page' }"
           >
             <q-item-section avatar>
               <q-icon name="bi-list-task" />
@@ -47,7 +47,7 @@
 
             <q-item-section> Задачи </q-item-section>
           </q-item>
-          <q-item clickable v-ripple class="rounded-borders q-mb-sm">
+          <q-item :to="{ name: 'projects-page' }" clickable v-ripple class="rounded-borders q-mb-sm">
             <q-item-section avatar>
               <q-icon name="bi-folder2" />
             </q-item-section>
@@ -64,7 +64,7 @@
           </q-item>
         </q-list>
       </q-scroll-area>
-      <q-item clickable class="settings rounded-borders">
+      <q-item clickable v-ripple class="settings rounded-borders">
         <q-item-section avatar>
           <q-icon name="bi-gear" />
         </q-item-section>
@@ -74,11 +74,7 @@
     </q-drawer>
 
     <q-page-container class="rounded-borders full-height">
-      <q-page class="q-pb-md q-px-md">
-        <div class="fit rounded-borders component-container">
-          <router-view />
-        </div>
-      </q-page>
+      <router-view />
     </q-page-container>
   </q-layout>
 </template>
@@ -118,9 +114,5 @@ const onLogout = async () => {
   width: 92%;
   bottom: 16px;
   left: 16px;
-}
-
-.component-container {
-  background-color: $light-bg-color;
 }
 </style>

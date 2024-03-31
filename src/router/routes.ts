@@ -8,8 +8,23 @@ const routes: RouteRecordRaw[] = [
     children: [
       {
         path: '',
-        name: 'home-page',
-        component: () => import('pages/IndexPage.vue'),
+        name: 'main-page',
+        component: () => import('pages/MainPage.vue'),
+      },
+      {
+        path: '/tasks',
+        name: 'tasks-page',
+        component: () => import('pages/TasksPage.vue'),
+      },
+      {
+        path: '/projects',
+        name: 'projects-page',
+        component: () => import('pages/ProjectsPage.vue'),
+      },
+      {
+        path: '/projects/:id',
+        name: 'single-project-page',
+        component: () => import('pages/SingleProjectPage.vue'),
       },
     ],
   },
@@ -31,13 +46,13 @@ const routes: RouteRecordRaw[] = [
             name: 'login',
             path: '/login',
             meta: { onlyNotAuth: true },
-            component: () => import('src/components/LoginCard.vue'),
+            component: () => import('src/components/Auth/LoginCard.vue'),
           },
           {
             name: 'register',
             path: '/register',
             meta: { onlyNotAuth: true },
-            component: () => import('src/components/RegistrationCard.vue'),
+            component: () => import('src/components/Auth/RegistrationCard.vue'),
           },
         ],
       },
