@@ -36,7 +36,7 @@
                 params: { id: 2031 },
               })
             "
-          ></project-card>
+          />
         </div>
       </q-scroll-area>
     </div>

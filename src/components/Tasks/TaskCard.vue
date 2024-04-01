@@ -1,5 +1,5 @@
 <template>
-  <q-card flat class="task-card fit">
+  <q-card flat :bordered="props.bordered" class="task-card fit">
     <q-card-section
       class="row no-wrap items-center"
       :class="{ 'justfy-between': $q.screen.width <= 900 }"
@@ -40,6 +40,10 @@
 import { ref } from 'vue';
 import StatusSelect from 'components/StatusSelect.vue';
 const select = ref('');
+interface Props {
+  bordered: boolean;
+}
+const props = withDefaults(defineProps<Props>(), { bordered: false });
 </script>
 
 <style scoped lang="scss">
