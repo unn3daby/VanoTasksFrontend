@@ -43,6 +43,7 @@ export const useTasksStore = defineStore('tasks', () => {
       await msApi.put(
         `${import.meta.env.VITE_MS_API}/tasks/${taskId}/change_status/${status}`
       );
+      Notification.success('Статус задачи успешно изменен');
     } catch (error) {
       Notification.error('Ошибка');
     }
@@ -65,6 +66,7 @@ export const useTasksStore = defineStore('tasks', () => {
         `${import.meta.env.VITE_MS_API}/tasks/task_comments/${taskId}`,
         { comment_text }
       );
+      Notification.success('Комментарий добавлен');
     } catch (error) {
       Notification.error('Ошибка');
     }

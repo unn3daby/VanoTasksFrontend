@@ -41,6 +41,9 @@
         </div>
       </q-scroll-area>
     </div>
+    <q-inner-loading class="bg-white" :showing="loading">
+      <q-spinner size="50px" color="primary" />
+    </q-inner-loading>
   </q-page>
 </template>
 
@@ -50,9 +53,11 @@ import { useProjectsStore } from 'stores/projectsStore';
 import ProjectCard from 'components/ProjectCard.vue';
 const projectsStore = useProjectsStore();
 const search = ref('');
-
+const loading = ref(false);
 onMounted(async () => {
+  loading.value = true;
   await projectsStore.getProjects();
+  loading.value = false;
 });
 </script>
 

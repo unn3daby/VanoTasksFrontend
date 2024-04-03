@@ -6,6 +6,15 @@ export default class Notification {
       progress: true,
       type: 'negative',
       message: message,
+      position: 'bottom-right',
+    });
+  }
+  static success(message: string) {
+    Notify.create({
+      progress: true,
+      type: 'positive',
+      message: message,
+      position: 'bottom-right',
     });
   }
 }

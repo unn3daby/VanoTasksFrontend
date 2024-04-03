@@ -34,6 +34,9 @@
         </div>
       </q-scroll-area>
     </div>
+    <q-inner-loading class="bg-white" :showing="loading">
+      <q-spinner size="50px" color="primary" />
+    </q-inner-loading>
   </q-page>
 </template>
 
@@ -43,9 +46,11 @@ import TaskCard from 'components/Tasks/TaskCard.vue';
 import { useTasksStore } from 'src/stores/tasksStore';
 
 const taskStore = useTasksStore();
-
+const loading = ref(false);
 onMounted(async () => {
+  loading.value = true;
   await taskStore.getTasks();
+  loading.value = false;
 });
 const search = ref('');
 </script>

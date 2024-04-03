@@ -1,7 +1,9 @@
 import { acceptHMRUpdate, defineStore } from 'pinia';
 import { UserModel } from 'src/models/UserModel';
 import { RegUserModel } from 'src/models/RegUserModel';
+import Notification from 'src/utils/Notification';
 import { msApi } from 'src/api/authService';
+import { ProfileModel } from 'src/models/ProfileModel';
 
 export const useAuthStore = defineStore('auth', {
   state: (): { userData: UserModel } => ({
@@ -22,6 +24,7 @@ export const useAuthStore = defineStore('auth', {
       formData.append('password', payload.password);
       try {
         await msApi.post<UserModel>('/auth/login', formData);
+        Notification.success('Пользователь успешно авторизован');
       } catch (error) {
         throw new Error(`${error}`);
       }
@@ -49,6 +52,7 @@ export const useAuthStore = defineStore('auth', {
           ...payload,
           role_id: 0,
         });
+        Notification.success('Пользователь успешно зарегистрирован');
       } catch (error) {
         throw new Error(`${error}`);
       }
@@ -64,6 +68,16 @@ export const useAuthStore = defineStore('auth', {
     async getUserById(id: number) {
       try {
         const { data } = await msApi.get(`/users/${id}`);
+        return data;
+      } catch (error) {
+        throw new Error(`${error}`);
+      }
+    },
+    async getProfileById(userId: number) {
+      try {
+        const { data } = await msApi.get<ProfileModel>(
+          `/users/profile/${userId}`
+        );
         return data;
       } catch (error) {
         throw new Error(`${error}`);

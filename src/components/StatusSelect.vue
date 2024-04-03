@@ -2,6 +2,7 @@
   <q-select
     class="select"
     dense
+    round
     standout="shadow"
     v-model="select"
     :bg-color="selectColor"
@@ -62,7 +63,11 @@ const selectColor = computed(() => {
 :deep(.q-field__inner) {
   border-radius: 5px;
 }
-.shadow {
-  box-shadow: none;
+:deep(.shadow) {
+  box-shadow: none !important;
+}
+
+:deep(.q-select__dropdown-icon) {
+  color: white;
 }
 </style>

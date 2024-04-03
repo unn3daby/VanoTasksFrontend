@@ -30,13 +30,13 @@
       >
         <div class="q-ma-md">
           <q-avatar>
-            <img src="https://cdn.quasar.dev/img/avatar.png" />
+            <img :src="userProfile.photo_url || 'src/assets/user.jpg'" />
           </q-avatar>
-          <span class="q-ml-md">Ivan VANO</span>
+          <span class="q-ml-md">{{ authStore.userData.username }}</span>
         </div>
         <q-list padding class="q-pt-none full-height">
           <q-item
-            clickable
+            clickable 
             v-ripple
             class="rounded-borders q-mb-sm"
             :to="{ name: 'tasks-page' }"
@@ -47,7 +47,12 @@
 
             <q-item-section> Задачи </q-item-section>
           </q-item>
-          <q-item :to="{ name: 'projects-page' }" clickable v-ripple class="rounded-borders q-mb-sm">
+          <q-item
+            :to="{ name: 'projects-page' }"
+            clickable
+            v-ripple
+            class="rounded-borders q-mb-sm"
+          >
             <q-item-section avatar>
               <q-icon name="bi-folder2" />
             </q-item-section>
@@ -80,13 +85,15 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import { useAuthStore } from 'src/stores/authStore';
 import { useRouter } from 'vue-router';
+import { ProfileModel } from 'src/models/ProfileModel';
 
 const router = useRouter();
 
 const authStore = useAuthStore();
+const userProfile = ref({} as ProfileModel);
 
 const leftDrawerOpen = ref(false);
 
@@ -98,6 +105,10 @@ const onLogout = async () => {
   await authStore.logout();
   await router.push({ name: 'auth' });
 };
+
+onMounted(async () => {
+  userProfile.value = await authStore.getProfileById(authStore.userData.id);
+});
 </script>
 <style scoped lang="scss">
 .vano {

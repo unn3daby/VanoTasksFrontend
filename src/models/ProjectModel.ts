@@ -7,6 +7,11 @@ interface ProjectModel {
   created_at: string;
 }
 
+interface SingleProjectModel {
+  project: ProjectModel;
+  tasks_count: number;
+}
+
 interface ProjectResponseModel {
   items: ProjectModel[];
   total: number;
@@ -15,4 +20,4 @@ interface ProjectResponseModel {
   pages: number;
 }
 
-export type { ProjectModel, ProjectResponseModel };
+export type { ProjectModel, ProjectResponseModel, SingleProjectModel };

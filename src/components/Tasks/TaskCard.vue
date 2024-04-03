@@ -30,7 +30,7 @@
         class="task-project row column justify-center text-grey"
       >
         <div class="cursor-pointer task-project-name">
-          {{ data.project_id }} Имя проекта
+          {{ data.project_name }}
         </div>
         <div>
           {{ new Date(data.created_at).toLocaleDateString() }}
@@ -55,7 +55,7 @@
 import { ref } from 'vue';
 import StatusSelect from 'components/StatusSelect.vue';
 import { useTasksStore } from 'src/stores/tasksStore';
-import TaskModel from 'src/models/TaskModel';
+import { TaskModel } from 'src/models/TaskModel';
 interface Props {
   bordered?: boolean;
   data: TaskModel;

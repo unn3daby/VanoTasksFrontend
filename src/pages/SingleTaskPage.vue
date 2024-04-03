@@ -48,12 +48,6 @@
                 Дата создания:
                 {{ new Date(currentTask.created_at).toLocaleDateString() }}
               </div>
-              <div class="q-px-md q-pt-sm">
-                Создал:
-                <span class="text-primary cursor-pointer">{{
-                  user.username
-                }}</span>
-              </div>
             </div>
             <div>
               <div class="text-bold q-mt-md">Описание:</div>
@@ -114,29 +108,46 @@
             </div>
           </div>
           <div class="col-4">
-            <q-card flat class="rounded-borders bg-white">
-              <q-card-section class="q-px-lg">
-                <q-input
-                  dense
-                  v-model="search"
-                  class="workers-input"
-                  label="Сотрудники"
-                  ><template #append>
-                    <q-icon
-                      v-if="search !== ''"
-                      name="bi-x-lg"
-                      @click="search = ''"
-                      size="xs"
-                      class="cursor-pointer q-mr-sm"
-                    />
-                    <q-icon name="bi-search" size="xs" /> </template
-                ></q-input>
-              </q-card-section>
-            </q-card>
+            <div class="text-bold text-center text-h6">Люди:</div>
+            <div class="text-left q-mb-sm">Создатель:</div>
+            <worker-card
+              v-if="user.id"
+              :user-id="user.id"
+              v-ripple
+              class="cursor-pointer"
+            >
+              <template #append>
+                <q-icon
+                  name="mdi-crown"
+                  size="md"
+                  class="q-mx-md"
+                  style="color: #fac980"
+                ></q-icon>
+              </template>
+            </worker-card>
+            <div class="text-left q-mt-md q-mb-sm class row justify-between">
+              Исполнитель:
+              <div class="text-right text-primary cursor-pointer">
+                Назанчить меня
+              </div>
+            </div>
+            <worker-card
+              v-if="assignedUser.id"
+              class="cursor-pointer"
+              v-ripple
+              :user-id="assignedUser.id"
+            >
+              <template #append>
+                <q-btn flat icon="mdi-pencil" @click.stop></q-btn>
+              </template>
+            </worker-card>
           </div>
         </div>
       </q-scroll-area>
     </div>
+    <q-inner-loading class="bg-white" :showing="loading">
+      <q-spinner size="50px" color="primary" />
+    </q-inner-loading>
   </q-page>
 </template>
 
@@ -147,14 +158,17 @@ import { useTasksStore } from 'src/stores/tasksStore';
 import { useAuthStore } from 'src/stores/authStore';
 import { useRoute } from 'vue-router';
 import CommentCard from 'components/CommentCard.vue';
+import WorkerCard from 'src/components/WorkerCard.vue';
 import { storeToRefs } from 'pinia';
 import { UserModel } from 'src/models/UserModel';
+import { ProfileModel } from 'src/models/ProfileModel';
 
-const search = ref('');
-const user: Ref<UserModel> = ref({} as UserModel);
+const user: Ref<ProfileModel> = ref({} as ProfileModel);
+const assignedUser: Ref<UserModel> = ref({} as UserModel);
 const comment = ref('');
 const isTextAreaVisible = ref(false);
 const status = ref(0);
+const loading = ref(false);
 
 const route = useRoute();
 const authStore = useAuthStore();
@@ -168,10 +182,15 @@ const addComment = async () => {
 };
 
 onMounted(async () => {
+  loading.value = true;
   await tasksStore.getTaskById(route.params.id as string);
   await tasksStore.getComments(route.params.id as string);
   user.value = await authStore.getUserById(tasksStore.currentTask.created_by);
+  assignedUser.value = await authStore.getUserById(
+    tasksStore.currentTask.assigned_to
+  );
   status.value = tasksStore.currentTask.status_id;
+  loading.value = false;
 });
 </script>
 

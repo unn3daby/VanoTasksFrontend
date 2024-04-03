@@ -25,19 +25,35 @@
     </q-card-section>
     <q-card-section class="q-pt-sm text-right">
       <div class="text-grey">Руководитель:</div>
-      <div class="text-grey">{{ props.data.created_by }}</div>
+      <div class="text-grey">{{ profile.full_name }}</div>
     </q-card-section>
+    <q-inner-loading class="bg-white" :showing="loading">
+      <q-spinner size="50px" color="primary" />
+    </q-inner-loading>
   </q-card>
 </template>
 
 <script setup lang="ts">
 import { ProjectModel } from 'src/models/ProjectModel';
 import { format } from 'date-fns';
+import { useAuthStore } from 'src/stores/authStore';
+import { onMounted, ref } from 'vue';
+
 interface Props {
   data: ProjectModel;
 }
 
+const authStore = useAuthStore();
+const profile = ref({ full_name: '' });
 const props = defineProps<Props>();
+
+const loading = ref(false);
+
+onMounted(async () => {
+  loading.value = true;
+  profile.value = await authStore.getProfileById(props.data.created_by);
+  loading.value = false;
+});
 </script>
 
 <style scoped lang="scss">
