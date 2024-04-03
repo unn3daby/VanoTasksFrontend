@@ -92,8 +92,16 @@
               </q-card-section>
             </q-card>
           </div>
-          <div class="q-mt-md bg-white fit text-center text-h6 q-py-md">
-            Список задач проекта
+          <div class="q-mt-md bg-white fit text-center text-h6 q-py-md row">
+            <div class="q-ml-md">Список задач проекта:</div>
+            <q-space></q-space>
+            <q-btn
+              class="q-mr-md"
+              flat
+              icon="mdi-plus"
+              @click="isDialogVisible = true"
+              ><q-tooltip>Создать задачу</q-tooltip></q-btn
+            >
           </div>
           <q-scroll-area
             visible
@@ -113,6 +121,7 @@
           </q-scroll-area>
         </div>
       </q-scroll-area>
+      <TaskCreationDialog v-model="isDialogVisible" />
     </div>
     <q-inner-loading class="bg-white" :showing="loading">
       <q-spinner size="50px" color="primary" />
@@ -121,6 +130,7 @@
 </template>
 
 <script setup lang="ts">
+import TaskCreationDialog from 'components/TaskCreationDialog.vue';
 import { onMounted, ref } from 'vue';
 import TaskCard from 'src/components/Tasks/TaskCard.vue';
 import { useRoute } from 'vue-router';
@@ -134,6 +144,8 @@ const { currentProject, currentProjectUsers, currentProjectTasks } =
   storeToRefs(projectsStore);
 
 const projectId = route.params.id.toString();
+
+const isDialogVisible = ref(false);
 
 const search = ref('');
 
