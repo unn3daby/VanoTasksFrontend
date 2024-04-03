@@ -2,10 +2,7 @@
   <q-card flat>
     <q-card-section class="row items-center no-wrap">
       <q-avatar>
-        <img
-          class="col-1"
-          src="https://avatars.dzeninfra.ru/get-zen_doc/1592433/pub_6503cf002f6d150206d11abf_6503cf0a804a857b5a40fe6f/smart_crop_516x290"
-        />
+        <div class="bg-primary" style="height: 100px; width: 100px"></div>
       </q-avatar>
       <div class="col text-h6 q-ml-lg">{{ props.data.project_name }}</div>
     </q-card-section>

@@ -6,7 +6,7 @@ import { msApi } from 'src/api/authService';
 import { ProfileModel } from 'src/models/ProfileModel';
 
 export const useAuthStore = defineStore('auth', {
-  state: (): { userData: UserModel } => ({
+  state: (): { userData: UserModel; users: UserModel[] } => ({
     userData: {
       id: 0,
       email: '',
@@ -16,6 +16,7 @@ export const useAuthStore = defineStore('auth', {
       username: '',
       role_id: 0,
     },
+    users: [],
   }),
   actions: {
     async login(payload: { username: string; password: string }) {
@@ -65,7 +66,15 @@ export const useAuthStore = defineStore('auth', {
         throw new Error(`${error}`);
       }
     },
-    async getUserById(id: number) {
+    async getUsers() {
+      try {
+        const { data } = await msApi.get('/users');
+        this.users = data.items;
+      } catch (error) {
+        Notification.error('Ошибка');
+      }
+    },
+    async getUserById(id: number | string) {
       try {
         const { data } = await msApi.get(`/users/${id}`);
         return data;
@@ -73,7 +82,7 @@ export const useAuthStore = defineStore('auth', {
         throw new Error(`${error}`);
       }
     },
-    async getProfileById(userId: number) {
+    async getProfileById(userId: number | string) {
       try {
         const { data } = await msApi.get<ProfileModel>(
           `/users/profile/${userId}`

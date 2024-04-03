@@ -13,7 +13,17 @@
 
         <q-toolbar-title> Vano Tasks </q-toolbar-title>
 
-        <q-btn @click="onLogout" flat icon="mdi-exit-to-app"></q-btn>
+        <div>
+          <q-btn @click="isAIOpened = true" icon="bi-magic" flat>
+            <q-menu :offset="[0, 20]">
+              <ChatTooltip />
+            </q-menu>
+            <q-tooltip>Спросить у ИИ</q-tooltip>
+          </q-btn>
+          <q-btn @click="onLogout" flat icon="mdi-exit-to-app">
+            <q-tooltip>Выйти из аккаунта</q-tooltip></q-btn
+          >
+        </div>
       </q-toolbar>
     </q-header>
 
@@ -36,7 +46,7 @@
         </div>
         <q-list padding class="q-pt-none full-height">
           <q-item
-            clickable 
+            clickable
             v-ripple
             class="rounded-borders q-mb-sm"
             :to="{ name: 'tasks-page' }"
@@ -60,7 +70,12 @@
             <q-item-section> Проекты </q-item-section>
           </q-item>
 
-          <q-item clickable v-ripple class="rounded-borders q-mb-sm">
+          <q-item
+            clickable
+            v-ripple
+            class="rounded-borders q-mb-sm"
+            :to="{ name: 'users-page' }"
+          >
             <q-item-section avatar>
               <q-icon name="bi-people" />
             </q-item-section>
@@ -89,10 +104,12 @@ import { onMounted, ref } from 'vue';
 import { useAuthStore } from 'src/stores/authStore';
 import { useRouter } from 'vue-router';
 import { ProfileModel } from 'src/models/ProfileModel';
+import ChatTooltip from 'components/ChatTooltip.vue';
 
 const router = useRouter();
 
 const authStore = useAuthStore();
+const isAIOpened = ref(false);
 const userProfile = ref({} as ProfileModel);
 
 const leftDrawerOpen = ref(false);

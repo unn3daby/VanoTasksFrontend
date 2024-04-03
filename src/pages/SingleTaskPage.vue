@@ -128,7 +128,7 @@
             <div class="text-left q-mt-md q-mb-sm class row justify-between">
               Исполнитель:
               <div class="text-right text-primary cursor-pointer">
-                Назанчить меня
+                Назначить меня
               </div>
             </div>
             <worker-card

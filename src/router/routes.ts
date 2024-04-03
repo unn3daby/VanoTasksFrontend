@@ -31,6 +31,16 @@ const routes: RouteRecordRaw[] = [
         name: 'single-project-page',
         component: () => import('pages/SingleProjectPage.vue'),
       },
+      {
+        path: '/users',
+        name: 'users-page',
+        component: () => import('pages/UsersPage.vue'),
+      },
+            {
+        path: '/users/:id',
+        name: 'single-user-page',
+        component: () => import('pages/SingleUserPage.vue'),
+      },
     ],
   },
   {
