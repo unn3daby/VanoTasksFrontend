@@ -11,9 +11,7 @@
             class="avatar-container bg-white q-pa-md q-mr-md rounded-borders"
           >
             <q-avatar size="150px"
-              ><img
-                src="https://avatars.mds.yandex.net/i?id=acc09854bd2353d02130a38c0dac1843f4e3c4fc-4276765-images-thumbs&n=13"
-                alt=""
+              ><img :src="profile.photo_url || 'src/assets/user.jpg'" alt=""
             /></q-avatar>
           </div>
           <div class="bg-white rounded-borders col q-pa-md">
