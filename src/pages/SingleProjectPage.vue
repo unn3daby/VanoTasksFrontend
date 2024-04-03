@@ -26,11 +26,7 @@
               ></q-btn>
               <q-space></q-space>
               <div class="manager">
-                <worker-card
-                  v-for="worker in currentProjectUsers"
-                  :key="worker.id"
-                  :user-id="worker.id"
-                >
+                <worker-card :user-id="currentProject.project.created_by">
                   <template #append>
                     <q-icon
                       name="mdi-crown"
