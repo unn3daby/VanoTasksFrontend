@@ -5,24 +5,36 @@
       :class="{ 'justfy-between': $q.screen.width <= 900 }"
     >
       <div
-        class="task-id"
+        class="task-id cursor-pointer"
         :class="{
           'col-2': $q.screen.width > 900 && $q.screen.width <= 1200,
           'col-1': $q.screen.width > 1200,
         }"
+        @click="
+          $router.push({
+            name: 'single-task-page',
+            params: { id: data.task_id },
+          })
+        "
       >
-        VANO-2345
+        Задача №{{ data.task_id }}
       </div>
-      <div class="col task-descr q-px-md">Сделать вано вано</div>
+      <div class="col task-descr q-px-md">
+        <span class="text-bold">Задача: </span>{{ data.task_name }}
+      </div>
       <div
         :class="{
           'col-2': $q.screen.width > 900 && $q.screen.width <= 1200,
           'col-1': $q.screen.width > 1200,
         }"
-        class="task-project row column justify-center"
+        class="task-project row column justify-center text-grey"
       >
-        <div>VanoChat</div>
-        <div>05.02.2023</div>
+        <div class="cursor-pointer task-project-name">
+          {{ data.project_id }} Имя проекта
+        </div>
+        <div>
+          {{ new Date(data.created_at).toLocaleDateString() }}
+        </div>
       </div>
       <div
         :class="{
@@ -30,7 +42,10 @@
         }"
         class="task-controls"
       >
-        <status-select v-model="select"></status-select>
+        <status-select
+          v-model="select"
+          @update-task-status="updateTaskStatus"
+        ></status-select>
       </div>
     </q-card-section>
   </q-card>
@@ -39,11 +54,21 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import StatusSelect from 'components/StatusSelect.vue';
-const select = ref('');
+import { useTasksStore } from 'src/stores/tasksStore';
+import TaskModel from 'src/models/TaskModel';
 interface Props {
-  bordered: boolean;
+  bordered?: boolean;
+  data: TaskModel;
 }
+const tasksStore = useTasksStore();
+
 const props = withDefaults(defineProps<Props>(), { bordered: false });
+
+const select = ref(props.data.status_id);
+
+const updateTaskStatus = async (status: number) => {
+  await tasksStore.putTaskStatus(props.data.task_id, status);
+};
 </script>
 
 <style scoped lang="scss">
@@ -56,6 +81,13 @@ const props = withDefaults(defineProps<Props>(), { bordered: false });
     overflow: hidden;
     text-overflow: ellipsis;
     flex-grow: 1;
+  }
+}
+
+.task-project-name {
+  transition: all 0.2s;
+  &:hover {
+    color: $primary;
   }
 }
 

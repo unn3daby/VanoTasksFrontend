@@ -26,14 +26,15 @@
       >
         <div class="projects-container">
           <project-card
-            v-for="i in 10"
-            :key="i"
+            v-for="project in projectsStore.projectsArray"
+            :key="project.id"
+            :data="project"
             v-ripple
             class="cursor-pointer"
             @click="
               $router.push({
                 name: 'single-project-page',
-                params: { id: 2031 },
+                params: { id: project.id },
               })
             "
           />
@@ -45,12 +46,13 @@
 
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
-import { authService } from 'src/api/authService';
+import { useProjectsStore } from 'stores/projectsStore';
 import ProjectCard from 'components/ProjectCard.vue';
+const projectsStore = useProjectsStore();
 const search = ref('');
 
 onMounted(async () => {
-  await authService.get('/projects');
+  await projectsStore.getProjects();
 });
 </script>
 
@@ -66,7 +68,7 @@ onMounted(async () => {
 }
 .projects-container {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(400px, 400px));
   grid-gap: 20px;
 }
 :deep(.q-scrollarea__content) {

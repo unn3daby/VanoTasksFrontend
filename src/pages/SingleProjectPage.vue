@@ -80,7 +80,7 @@
             :thumb-style="{ right: '5px', width: '7px' }"
           >
             <div>
-              <task-card bordered v-for="n in 10" :key="n" class="q-mb-md" />
+              <!-- <task-card bordered v-for="n in 10" :key="n" class="q-mb-md" /> -->
             </div>
           </q-scroll-area>
         </div>

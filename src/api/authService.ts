@@ -1,12 +1,12 @@
 import axios from 'axios';
 
-const authService = axios.create({
+const msApi = axios.create({
   baseURL: import.meta.env.VITE_MS_API,
   withCredentials: true,
   xsrfCookieName: 'csrf_access_token',
 });
 
-authService.interceptors.response.use(
+msApi.interceptors.response.use(
   (res) => res,
   (err) => {
     /* const errorMessage = err.response.statusText;
@@ -24,4 +24,4 @@ authService.interceptors.response.use(
     return Promise.reject(err);
   }
 );
-export { authService };
+export { msApi };

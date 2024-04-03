@@ -25,7 +25,12 @@
         style="height: calc(100% - 85px); max-width: 100%"
       >
         <div>
-          <task-card v-for="n in 10" :key="n" class="q-mb-md" />
+          <task-card
+            v-for="task in taskStore.tasksArray"
+            :key="task.task_id"
+            :data="task"
+            class="q-mb-md"
+          />
         </div>
       </q-scroll-area>
     </div>
@@ -33,9 +38,15 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import TaskCard from 'components/Tasks/TaskCard.vue';
+import { useTasksStore } from 'src/stores/tasksStore';
 
+const taskStore = useTasksStore();
+
+onMounted(async () => {
+  await taskStore.getTasks();
+});
 const search = ref('');
 </script>
 
