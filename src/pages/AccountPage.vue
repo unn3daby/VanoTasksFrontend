@@ -64,7 +64,16 @@ const updateProfile = async () => {
   if (file.value) {
     const blob = new Blob([file.value], { type: file.value.type });
     formData.append('photo', blob, file.value.name);
-    await authStore.putUserProfile(formData, {
+    await authStore.putUserProfile(
+      {
+        user_id: authStore.userData.id,
+        full_name: fullname.value,
+      },
+      formData
+    );
+    authStore.getProfile();
+  } else {
+    await authStore.putUserProfile({
       user_id: authStore.userData.id,
       full_name: fullname.value,
     });

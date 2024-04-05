@@ -120,11 +120,11 @@ export const useAuthStore = defineStore('auth', {
       }
     },
     async putUserProfile(
-      formData: FormData,
-      payload: { user_id: number | string; full_name: string }
+      payload: { user_id: number | string; full_name: string },
+      formData?: FormData
     ) {
       try {
-        await msApi.put('/users/upload-photo', formData, { params: payload });
+        await msApi.put('/users/upload/photo', formData, { params: payload });
         Notification.success('Профиль успешно изменен');
       } catch (error) {
         throw new Error(`${error}`);
