@@ -6,7 +6,11 @@ import { msApi } from 'src/api/authService';
 import { ProfileModel } from 'src/models/ProfileModel';
 
 export const useAuthStore = defineStore('auth', {
-  state: (): { userData: UserModel; users: UserModel[] } => ({
+  state: (): {
+    userData: UserModel;
+    users: UserModel[];
+    profile: ProfileModel;
+  } => ({
     userData: {
       id: 0,
       email: '',
@@ -15,6 +19,11 @@ export const useAuthStore = defineStore('auth', {
       is_verified: false,
       username: '',
       role_id: 0,
+    },
+    profile: {
+      full_name: '',
+      user_id: 0,
+      photo_url: null,
     },
     users: [],
   }),
@@ -88,6 +97,35 @@ export const useAuthStore = defineStore('auth', {
           `/users/profile/${userId}`
         );
         return data;
+      } catch (error) {
+        throw new Error(`${error}`);
+      }
+    },
+    async getProfile() {
+      try {
+        const { data } = await msApi.get<ProfileModel>(
+          `/users/profile/${this.userData.id}`
+        );
+        this.profile = data;
+      } catch (error) {
+        throw new Error(`${error}`);
+      }
+    },
+    async getAllUserData() {
+      try {
+        await this.getUserData();
+        await this.getProfile();
+      } catch (error) {
+        throw new Error(`${error}`);
+      }
+    },
+    async putUserProfile(
+      formData: FormData,
+      payload: { user_id: number | string; full_name: string }
+    ) {
+      try {
+        await msApi.put('/users/upload-photo', formData, { params: payload });
+        Notification.success('Профиль успешно изменен');
       } catch (error) {
         throw new Error(`${error}`);
       }

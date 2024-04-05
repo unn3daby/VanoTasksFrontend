@@ -38,13 +38,17 @@
         class="fit q-pl-md"
         :horizontal-thumb-style="{ opacity: '0' }"
       >
-        <div class="q-ma-md">
-          <q-avatar>
-            <img :src="userProfile.photo_url || 'src/assets/user.jpg'" />
-          </q-avatar>
-          <span class="q-ml-md">{{ authStore.userData.username }}</span>
-        </div>
         <q-list padding class="q-pt-none full-height">
+          <q-item
+            v-ripple
+            class="q-my-md q-pa-sm no-wrap row items-center rounded-borders cursor-pointer"
+            :to="{ name: 'account-page' }"
+          >
+            <q-avatar>
+              <img :src="userProfile.photo_url || 'src/assets/user.jpg'" />
+            </q-avatar>
+            <span class="q-ml-md">{{ authStore.userData.username }}</span>
+          </q-item>
           <q-item
             clickable
             v-ripple

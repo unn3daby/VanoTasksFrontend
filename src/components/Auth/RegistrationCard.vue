@@ -98,7 +98,7 @@ const onRegister = async () => {
     });
     // Почему в username передается email? потому что vano - homo
     await authStore.login({ username: email.value, password: password });
-    await authStore.getUserData();
+    await authStore.getAllUserData();
     await router.push('/');
   } catch (error) {
     // eslint-disable-next-line no-console

@@ -36,10 +36,15 @@ const routes: RouteRecordRaw[] = [
         name: 'users-page',
         component: () => import('pages/UsersPage.vue'),
       },
-            {
+      {
         path: '/users/:id',
         name: 'single-user-page',
         component: () => import('pages/SingleUserPage.vue'),
+      },
+      {
+        path: '/account',
+        name: 'account-page',
+        component: () => import('pages/AccountPage.vue'),
       },
     ],
   },

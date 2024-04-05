@@ -85,7 +85,7 @@ const onLogin = async () => {
       username: username.value,
       password: password.value.value,
     });
-    await authStore.getUserData();
+    await authStore.getAllUserData();
     await router.push('/');
   } catch (error) {
     // eslint-disable-next-line no-console

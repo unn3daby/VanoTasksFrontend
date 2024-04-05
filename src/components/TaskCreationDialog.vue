@@ -41,6 +41,7 @@
               try {
                 await msApi.post(`${ep}/tasks`, newData);
                 Notification.success('Успешно создано');
+                projectsStore.getTaskByProjectId($route.params.id as string);
                 isDialogVisible = false;
               } catch (error) {
                 Notification.error('Ошибка');
@@ -58,7 +59,10 @@
 <script setup lang="ts">
 import { reactive } from 'vue';
 import Notification from 'src/utils/Notification';
+import { useProjectsStore } from 'src/stores/projectsStore';
 import { msApi } from 'src/api/authService';
+
+const projectsStore = useProjectsStore();
 const isDialogVisible = defineModel<boolean>({ required: true });
 const ep = import.meta.env.VITE_MS_API;
 const newData = reactive({

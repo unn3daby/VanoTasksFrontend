@@ -2,10 +2,7 @@
   <q-card flat>
     <q-card-section class="row items-center">
       <q-avatar class="q-mr-md">
-        <img
-          src="https://avatars.dzeninfra.ru/get-zen_doc/1210285/pub_64e08d18d26a363c0ff251f8_64e08d19a944d116df34c368/smart_crop_516x290"
-          alt=""
-        />
+        <img :src="profile.photo_url || 'src/assets/user.jpg'" alt="" />
       </q-avatar>
       <div>{{ profile.full_name }}</div>
       <q-space></q-space>

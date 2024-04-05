@@ -4,7 +4,7 @@ import { boot } from 'quasar/wrappers';
 export default boot(async () => {
   const authStore = useAuthStore();
   try {
-    await authStore.getUserData();
+    await authStore.getAllUserData();
   } catch (error) {
     console.error(error);
   }
