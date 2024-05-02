@@ -31,8 +31,19 @@ export const useTasksStore = defineStore('tasks', () => {
     try {
       const { data } = await msApi.get(`/tasks/${id}`);
       currentTask.value = data;
-      const { page, pages, size, total } = data;
-      paging.value = { page, pages, size, total };
+    } catch (error) {
+      Notification.error('Ошибка');
+    }
+  };
+
+  const putTaskById = async (id: number | string) => {
+    try {
+      const formData = new FormData();
+      for (const key in currentTask.value) {
+        formData.append(key, currentTask.value[key]);
+      }
+      await msApi.put(`/tasks/${id}`, formData);
+      Notification.success('Задача обновлена');
     } catch (error) {
       Notification.error('Ошибка');
     }
@@ -79,6 +90,7 @@ export const useTasksStore = defineStore('tasks', () => {
     currentComments,
     getTasks,
     putTaskStatus,
+    putTaskById,
     getTaskById,
     getComments,
     postComment,

@@ -1,7 +1,10 @@
 import axios from 'axios';
+import { Capacitor } from '@capacitor/core';
 
 const msApi = axios.create({
-  baseURL: import.meta.env.VITE_MS_API,
+  baseURL: Capacitor.isNativePlatform()
+    ? import.meta.env.VITE_MOBILE_MS_API
+    : import.meta.env.VITE_MS_API,
   withCredentials: true,
   xsrfCookieName: 'csrf_access_token',
 });

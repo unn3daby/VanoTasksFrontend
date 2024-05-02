@@ -35,9 +35,6 @@
         ></WorkerCard>
       </q-scroll-area>
     </div>
-    <q-inner-loading class="bg-white" :showing="loading">
-      <q-spinner size="50px" color="primary" />
-    </q-inner-loading>
   </q-page>
 </template>
 
@@ -47,7 +44,6 @@ import { useAuthStore } from 'src/stores/authStore';
 import WorkerCard from 'src/components/WorkerCard.vue';
 
 const authStore = useAuthStore();
-const loading = ref(false);
 
 onMounted(async () => {
   await authStore.getUsers();

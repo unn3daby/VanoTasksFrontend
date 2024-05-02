@@ -7,14 +7,9 @@
         style="height: 100%; max-width: 100%"
       >
         <div class="row">
-          <div class="col-8 q-pr-md">
+          <div class="col-12 col-md-8 q-pr-md">
             <div class="row items-center no-wrap q-pl-md q-mb-md">
-              <q-avatar size="100px" class="q-mr-lg">
-                <img
-                  src="https://avatars.dzeninfra.ru/get-zen_doc/1592433/pub_6503cf002f6d150206d11abf_6503cf0a804a857b5a40fe6f/smart_crop_516x290"
-                />
-              </q-avatar>
-              <div class="text-h4">
+              <div class="text-h5">
                 {{ currentProject.project.project_name }}
               </div>
               <q-btn
@@ -25,40 +20,16 @@
                 class="q-ml-md"
               ></q-btn>
               <q-space></q-space>
-              <div class="manager">
-                <worker-card
-                  v-if="currentProject.project.created_by"
-                  :user-id="currentProject.project.created_by"
-                >
-                  <template #append>
-                    <q-icon
-                      name="mdi-crown"
-                      size="md"
-                      class="q-mx-md"
-                      style="color: #fac980"
-                      ><q-tooltip>Руководитель проекта</q-tooltip></q-icon
-                    >
-                  </template>
-                </worker-card>
-              </div>
             </div>
-            <div>
-              <div class="project-descr">Описание:</div>
-              <q-input
-                color="primary"
-                bg-color="white"
-                borderless
-                readonly
-                flat
-                v-model="currentProject.project.description"
-                class="q-pt-none q-pr-none rounded-borders descr-textarea"
-                type="textarea"
-              />
-            </div>
+            <div></div>
           </div>
-          <div class="col-4">
-            <q-card flat class="fit rounded-borders bg-white">
-              <q-card-section class="q-px-lg">
+          <div class="col-12">
+            <q-card
+              flat
+              class="fit rounded-borders bg-white"
+              style="min-height: 400px"
+            >
+              <q-card-section class="no-wrap justify-between row">
                 <q-input
                   dense
                   v-model="search"
@@ -74,10 +45,16 @@
                     />
                     <q-icon name="bi-search" size="xs" /> </template
                 ></q-input>
+                <q-btn
+                  flat
+                  icon="mdi-plus"
+                  @click="isAddingModalOpened = true"
+                ></q-btn>
               </q-card-section>
-              <q-card-section class="fit workers-wrapper q-pa-none bordered">
+              <q-separator class="q-mx-sm"></q-separator>
+              <q-card-section class="fit q-pa-none">
                 <q-scroll-area
-                  class="q-px-md q-pb-md"
+                  class="q-pa-md"
                   style="height: calc(100% - 75px); max-width: 100%"
                   :thumb-style="{ right: '5px', width: '7px' }"
                 >
@@ -93,7 +70,7 @@
             </q-card>
           </div>
           <div class="q-mt-md bg-white fit text-center text-h6 q-py-md row">
-            <div class="q-ml-md">Список задач проекта:</div>
+            <div class="q-ml-md">Список задач:</div>
             <q-space></q-space>
             <q-btn
               class="q-mr-md"
@@ -122,14 +99,13 @@
         </div>
       </q-scroll-area>
       <TaskCreationDialog v-model="isDialogVisible" />
+      <UserAddDialog v-model="isAddingModalOpened" />
     </div>
-    <q-inner-loading class="bg-white" :showing="loading">
-      <q-spinner size="50px" color="primary" />
-    </q-inner-loading>
   </q-page>
 </template>
 
 <script setup lang="ts">
+import UserAddDialog from 'src/components/UserAddDialog.vue';
 import TaskCreationDialog from 'components/TaskCreationDialog.vue';
 import { onMounted, ref } from 'vue';
 import TaskCard from 'src/components/Tasks/TaskCard.vue';
@@ -146,6 +122,7 @@ const { currentProject, currentProjectUsers, currentProjectTasks } =
 const projectId = route.params.id.toString();
 
 const isDialogVisible = ref(false);
+const isAddingModalOpened = ref(false);
 
 const search = ref('');
 

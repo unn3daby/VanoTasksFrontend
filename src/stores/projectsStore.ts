@@ -10,6 +10,7 @@ import {
 import { ref, Ref } from 'vue';
 import { msApi } from 'src/api/authService';
 import { TaskModel } from 'src/models/TaskModel';
+import { AxiosError } from 'axios';
 
 export const useProjectsStore = defineStore('projects', () => {
   const paging: Ref<PaginigModel> = ref({} as PaginigModel);
@@ -70,6 +71,23 @@ export const useProjectsStore = defineStore('projects', () => {
     }
   };
 
+  const postProjectsUsersById = async (
+    projectId: number | string,
+    userId: number | string
+  ) => {
+    try {
+      const { data } = await msApi.post<Array<UserModel>>(
+        `/projects/user_projects/${userId}/${projectId}`
+      );
+      currentProjectUsers.value = data;
+      Notification.success('Пользователь успешно добавлен');
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        throw new Error(error.response?.data?.detail || 'Ошибка');
+      }
+    }
+  };
+
   return {
     paging,
     projectsArray,
@@ -79,6 +97,7 @@ export const useProjectsStore = defineStore('projects', () => {
     getProjectUsersById,
     getProjectById,
     getTaskByProjectId,
+    postProjectsUsersById,
     getProjects,
   };
 });

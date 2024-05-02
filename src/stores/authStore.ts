@@ -1,6 +1,7 @@
 import { acceptHMRUpdate, defineStore } from 'pinia';
 import { UserModel } from 'src/models/UserModel';
 import { RegUserModel } from 'src/models/RegUserModel';
+import { BaseResponseModel } from 'src/models/APIModel';
 import Notification from 'src/utils/Notification';
 import { msApi } from 'src/api/authService';
 import { ProfileModel } from 'src/models/ProfileModel';
@@ -10,6 +11,7 @@ export const useAuthStore = defineStore('auth', {
     userData: UserModel;
     users: UserModel[];
     profile: ProfileModel;
+    profilesList: ProfileModel[];
   } => ({
     userData: {
       id: 0,
@@ -26,6 +28,7 @@ export const useAuthStore = defineStore('auth', {
       photo_url: null,
     },
     users: [],
+    profilesList: [],
   }),
   actions: {
     async login(payload: { username: string; password: string }) {
@@ -107,6 +110,16 @@ export const useAuthStore = defineStore('auth', {
           `/users/profile/${this.userData.id}`
         );
         this.profile = data;
+      } catch (error) {
+        throw new Error(`${error}`);
+      }
+    },
+    async getAllProfiles() {
+      try {
+        const { data } = await msApi.get<
+          BaseResponseModel<Array<ProfileModel>>
+        >('users/all/profile');
+        this.profilesList = data.items;
       } catch (error) {
         throw new Error(`${error}`);
       }

@@ -47,9 +47,6 @@
         </div>
       </q-scroll-area>
     </div>
-    <q-inner-loading class="bg-white" :showing="loading">
-      <q-spinner size="50px" color="primary" />
-    </q-inner-loading>
   </q-page>
 </template>
 
@@ -81,7 +78,5 @@ onMounted(async () => {
 .component-container {
   background-color: $light-bg-color;
   height: 100%;
-}
-.avatar-container {
 }
 </style>

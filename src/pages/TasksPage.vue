@@ -8,7 +8,8 @@
           v-model="search"
           dense
           label="Поиск по задачам"
-          ><template #append>
+        >
+          <template #append>
             <q-icon
               v-if="search !== ''"
               name="bi-x-lg"
@@ -16,15 +17,16 @@
               size="xs"
               class="cursor-pointer q-mr-sm"
             />
-            <q-icon name="bi-search" size="xs" /> </template
-        ></q-input>
+            <q-icon name="bi-search" size="xs" />
+          </template>
+        </q-input>
       </div>
       <q-scroll-area
         visible
         class="q-pl-md q-mr-sm q-pr-md tasks-scroll"
         style="height: calc(100% - 85px); max-width: 100%"
       >
-        <div>
+        <div class="tasks-container">
           <task-card
             v-for="task in taskStore.tasksArray"
             :key="task.task_id"
@@ -34,9 +36,6 @@
         </div>
       </q-scroll-area>
     </div>
-    <q-inner-loading class="bg-white" :showing="loading">
-      <q-spinner size="50px" color="primary" />
-    </q-inner-loading>
   </q-page>
 </template>
 
@@ -47,6 +46,7 @@ import { useTasksStore } from 'src/stores/tasksStore';
 
 const taskStore = useTasksStore();
 const loading = ref(false);
+
 onMounted(async () => {
   loading.value = true;
   await taskStore.getTasks();
@@ -59,6 +59,13 @@ const search = ref('');
 .index {
   background-color: #493a3a;
 }
+
+/* .tasks-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+} */
+
 .search-input {
   width: 210px;
 }

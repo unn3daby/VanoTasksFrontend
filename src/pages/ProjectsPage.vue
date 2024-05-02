@@ -16,8 +16,9 @@
               size="xs"
               class="cursor-pointer"
             />
-            <q-icon name="bi-search" size="xs" /> </template
-        ></q-input>
+            <q-icon name="bi-search" size="xs" />
+          </template>
+        </q-input>
       </div>
       <q-scroll-area
         visible
@@ -41,9 +42,6 @@
         </div>
       </q-scroll-area>
     </div>
-    <q-inner-loading class="bg-white" :showing="loading">
-      <q-spinner size="50px" color="primary" />
-    </q-inner-loading>
   </q-page>
 </template>
 

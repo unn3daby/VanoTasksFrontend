@@ -7,166 +7,255 @@
         style="height: 100%; max-width: 100%"
       >
         <div class="row">
-          <div class="col-8">
-            <div class="row items-center justify-between no-wrap">
-              <div class="text-h5">
-                <span class="text-primary"
-                  >[Задача №{{ currentTask.task_id }}]
-                </span>
-                {{ currentTask.task_name }}
-              </div>
-              <div class="row q-mr-xl">
-                <status-select
-                  @update-task-status="
-                    tasksStore.putTaskStatus(
-                      tasksStore.currentTask.task_id,
-                      $event
-                    )
-                  "
-                  class="status-select"
-                  v-model="status"
-                />
-              </div>
-            </div>
-
-            <div>
-              <div class="text-bold q-mt-lg">Детали задачи:</div>
-              <div class="q-px-md q-pt-sm">
-                Проект:
-                <span
-                  class="text-primary cursor-pointer"
-                  @click="
-                    $router.push({
-                      name: 'single-project-page',
-                      params: { id: currentTask.project_id },
-                    })
-                  "
-                  >{{ currentTask.project_name }}</span
-                >
-              </div>
-              <div class="q-px-md q-pt-sm">
-                Дата создания:
-                {{ new Date(currentTask.created_at).toLocaleDateString() }}
-              </div>
-            </div>
-            <div>
-              <div class="text-bold q-mt-md">Описание:</div>
-              <div class="q-px-md q-pt-sm">
-                {{ currentTask.description }}
-              </div>
-            </div>
-            <div>
-              <div class="text-bold q-mt-md">Комментарии:</div>
-              <div class="q-pr-md q-pt-sm">
+          <div class="col-sm-8 col-12">
+            <q-breadcrumbs active-color="black" class="q-mb-md">
+              <q-breadcrumbs-el
+                label="Задачи"
+                class="cursor-pointer"
+                @click="$router.push({ name: 'tasks-page' })"
+              />
+              <q-breadcrumbs-el
+                :label="currentTask.task_name"
+                style="max-width: 100px"
+                class="ellipsis"
+              />
+            </q-breadcrumbs>
+            <div class="text-h5 q-mb-sm">
+              {{ currentTask.task_name }}
+              <q-popup-edit
+                class="row"
+                v-model="currentTask.task_name"
+                auto-save
+                v-slot="scope"
+              >
                 <q-input
-                  v-model="comment"
-                  class="comment-btn"
-                  v-if="!isTextAreaVisible"
+                  class="col-12"
+                  v-model="scope.value"
                   dense
-                  label="Добавьте комментарий"
-                  readonly
-                  borderless
-                  bg-color="white"
-                  @click="isTextAreaVisible = true"
+                  autofocus
+                  counter
+                  @keyup.enter="updateName(scope)"
                 />
-                <div v-if="isTextAreaVisible" class="relative">
-                  <q-input
-                    color="primary"
-                    autofocus
-                    borderless
-                    bg-color="white"
+                <div class="col-12 flex justify-end">
+                  <q-btn
                     flat
-                    v-model="comment"
-                    class="q-pt-none q-pr-none rounded-borders descr-textarea"
-                    type="textarea"
+                    color="primary"
+                    icon="mdi-check"
+                    class="self-end"
+                    @click="updateName(scope)"
                   />
-                  <div class="row justify-end q-mt-sm">
-                    <q-btn
+                </div>
+              </q-popup-edit>
+            </div>
+            <div class="buttons q-mb-md">
+              <q-btn
+                class="paperclip-btn q-px-sm"
+                no-caps
+                unelevated
+                icon="bi-paperclip"
+              >
+                Прикрепить
+              </q-btn>
+            </div>
+          </div>
+          <div class="col-sm-4 col-12 q-mb-md">
+            <status-select
+              @update-task-status="
+                tasksStore.putTaskStatus(tasksStore.currentTask.task_id, $event)
+              "
+              class="q-mb-md"
+              v-model="status"
+            />
+            <q-list class="rounded-borders bg-white">
+              <q-expansion-item
+                expand-separator
+                icon="perm_identity"
+                label="Сведения"
+              >
+                <q-separator class="q-mx-md"></q-separator>
+                <div class="q-pa-sm">
+                  <div class="q-mb-sm row justify-between">
+                    <div>Исполнитель:</div>
+                    <div
+                      class="text-primary cursor-pointer"
+                      @click="onAssignMe"
+                    >
+                      Назначить меня
+                    </div>
+                  </div>
+                  <div class="row items-center q-mb-lg">
+                    <q-avatar size="md" class="q-mr-sm">
+                      <img
+                        :src="assignedUser.photo_url || 'src/assets/user.jpg'"
+                      />
+                    </q-avatar>
+                    <div
+                      class="cursor-pointer"
+                      v-if="!isChangeAssigned"
                       @click="
-                        isTextAreaVisible = false;
-                        comment = '';
+                        isChangeAssigned = true;
+                        selectValue = JSON.parse(JSON.stringify(assignedUser));
                       "
-                      color="grey"
-                      unelevated
-                      class="q-mr-sm"
-                      >Отмена</q-btn
                     >
-                    <q-btn color="primary" unelevated @click="addComment"
-                      >Добавить</q-btn
-                    >
+                      {{ assignedUser.full_name }}
+                    </div>
+                    <div v-else class="row col-grow items-center no-wrap">
+                      <q-select
+                        class="col-10 q-mr-sm assigned-select"
+                        outlined
+                        v-model="selectValue"
+                        @update:model-value="
+                          async () => {
+                            tasksStore.currentTask.assigned_to =
+                              selectValue.user_id;
+                            await updateTask();
+                            isChangeAssigned = false;
+                            assignedUser = await authStore.getProfileById(
+                              selectValue.user_id
+                            );
+                          }
+                        "
+                        dense
+                        use-input
+                        behavior="menu"
+                        option-value="user_id"
+                        option-label="full_name"
+                        :options="authStore.profilesList"
+                      />
+                      <q-btn
+                        @click="isChangeAssigned = false"
+                        flat
+                        class="q-pa-sm"
+                        size="sm"
+                        icon="bi-x-lg"
+                      />
+                    </div>
+                  </div>
+                  <div class="q-mb-sm">Автор:</div>
+                  <div class="row items-center">
+                    <q-avatar size="md" class="q-mr-sm">
+                      <img :src="user.photo_url || 'src/assets/user.jpg'" />
+                    </q-avatar>
+                    <div>{{ user.full_name }}</div>
                   </div>
                 </div>
-              </div>
-              <div class="q-pr-md q-mt-md">
-                <comment-card
-                  class="q-mb-md"
-                  v-for="comment in tasksStore.currentComments"
-                  :key="comment.commented_at"
-                  :data="comment"
-                />
+              </q-expansion-item>
+            </q-list>
+          </div>
+        </div>
+        <div class="row q-mb-xl">
+          <div class="col-md-6 col-12">
+            <div class="q-mb-sm">Описание</div>
+            <div
+              v-if="!isDescrAreaVisible"
+              class="descr rounded-borders q-pa-xs"
+              @click="isDescrAreaVisible = true"
+            >
+              <span
+                class="text-grey-6"
+                v-if="!tasksStore.currentTask.description"
+                >Редактировать описание</span
+              >
+              <pre v-else class="q-ma-none descr-text">{{
+                tasksStore.currentTask.description
+              }}</pre>
+            </div>
+            <div v-if="isDescrAreaVisible">
+              <textarea
+                v-model="tasksStore.currentTask.description"
+                class="fit descr-area rounded-borders q-pa-sm"
+                rows="5"
+              />
+              <div class="row justify-end">
+                <q-btn
+                  class="q-mr-sm"
+                  unelevated
+                  @click="isDescrAreaVisible = false"
+                  >Отмена</q-btn
+                >
+                <q-btn color="primary" unelevated @click="updateTask"
+                  >Добавить</q-btn
+                >
               </div>
             </div>
           </div>
-          <div class="col-4">
-            <div class="text-bold text-center text-h6">Люди:</div>
-            <div class="text-left q-mb-sm">Создатель:</div>
-            <worker-card
-              v-if="user.id"
-              :user-id="user.id"
-              v-ripple
-              class="cursor-pointer"
-            >
-              <template #append>
-                <q-icon
-                  name="mdi-crown"
-                  size="md"
-                  class="q-mx-md"
-                  style="color: #fac980"
-                ></q-icon>
-              </template>
-            </worker-card>
-            <div class="text-left q-mt-md q-mb-sm class row justify-between">
-              Исполнитель:
-              <div class="text-right text-primary cursor-pointer">
-                Назначить меня
+        </div>
+        <div class="row">
+          <div class="col-sm-6 col-12">
+            <div class="active-title q-mb-sm">Активность</div>
+            <div class="q-mb-md">
+              Показать:
+              <span class="text-primary active rounded-borders"
+                >Комментарии</span
+              >
+            </div>
+            <div class="flex items-start q-mb-md">
+              <q-avatar size="lg" class="q-mr-sm">
+                <img :src="user.photo_url || 'src/assets/user.jpg'" />
+              </q-avatar>
+              <div
+                class="q-pa-sm rounded-borders comment-input text-grey-5"
+                v-if="!isCommentAreaVisible"
+                @click="isCommentAreaVisible = true"
+              >
+                Добавить комментарий...
+              </div>
+              <div v-else class="col-grow">
+                <textarea
+                  v-model="comment"
+                  class="fit descr-area rounded-borders q-pa-sm"
+                  rows="5"
+                />
+                <div class="row justify-end">
+                  <q-btn
+                    class="q-mr-sm"
+                    unelevated
+                    @click="isCommentAreaVisible = false"
+                    >Отмена</q-btn
+                  >
+                  <q-btn
+                    color="primary"
+                    unelevated
+                    @click="addComment"
+                    :disable="!comment"
+                    >Добавить</q-btn
+                  >
+                </div>
               </div>
             </div>
-            <worker-card
-              v-if="assignedUser.id"
-              class="cursor-pointer"
-              v-ripple
-              :user-id="assignedUser.id"
-            >
-              <template #append>
-                <q-btn flat icon="mdi-pencil" @click.stop></q-btn>
-              </template>
-            </worker-card>
+            <div class="row">
+              <CommentCard
+                class="col-12 q-mb-sm"
+                v-for="comment in tasksStore.currentComments"
+                :key="comment.commented_at"
+                :data="comment"
+              />
+            </div>
           </div>
         </div>
       </q-scroll-area>
     </div>
-    <q-inner-loading class="bg-white" :showing="loading">
-      <q-spinner size="50px" color="primary" />
-    </q-inner-loading>
   </q-page>
 </template>
 
 <script setup lang="ts">
 import StatusSelect from 'src/components/StatusSelect.vue';
-import { Ref, onMounted, ref } from 'vue';
+import { Ref, onBeforeMount, ref, watch } from 'vue';
 import { useTasksStore } from 'src/stores/tasksStore';
 import { useAuthStore } from 'src/stores/authStore';
 import { useRoute } from 'vue-router';
 import CommentCard from 'components/CommentCard.vue';
-import WorkerCard from 'src/components/WorkerCard.vue';
 import { storeToRefs } from 'pinia';
-import { UserModel } from 'src/models/UserModel';
 import { ProfileModel } from 'src/models/ProfileModel';
 
 const user: Ref<ProfileModel> = ref({} as ProfileModel);
-const assignedUser: Ref<UserModel> = ref({} as UserModel);
+const assignedUser: Ref<ProfileModel> = ref({} as ProfileModel);
 const comment = ref('');
-const isTextAreaVisible = ref(false);
+const descr = ref('');
+const isCommentAreaVisible = ref(false);
+const isDescrAreaVisible = ref(false);
+const isChangeAssigned = ref(false);
+const selectValue: Ref<ProfileModel> = ref({} as ProfileModel);
 const status = ref(0);
 const loading = ref(false);
 
@@ -175,18 +264,59 @@ const authStore = useAuthStore();
 const tasksStore = useTasksStore();
 const { currentTask } = storeToRefs(tasksStore);
 
+watch(
+  () => tasksStore.currentTask,
+  () => {
+    descr.value = tasksStore.currentTask.description;
+  },
+  { deep: true }
+);
+
 const addComment = async () => {
   await tasksStore.postComment(comment.value, route.params.id as string);
   await tasksStore.getComments(route.params.id as string);
   comment.value = '';
 };
 
-onMounted(async () => {
+const getAllProfiles = async () => {
+  await authStore.getAllProfiles();
+};
+
+const onAssignMe = async () => {
+  currentTask.value.assigned_to = authStore.profile.user_id;
+  await tasksStore.putTaskById(route.params.id as string);
+  assignedUser.value = await authStore.getProfileById(
+    tasksStore.currentTask.assigned_to
+  );
+};
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const updateName = async (scope: any) => {
+  if (scope.value) {
+    scope.set();
+    await tasksStore.putTaskById(route.params.id as string);
+  }
+};
+
+const updateTask = async () => {
+  await tasksStore.putTaskById(route.params.id as string);
+  isDescrAreaVisible.value = false;
+};
+
+watch(isChangeAssigned, () => {
+  if (isChangeAssigned.value) {
+    getAllProfiles();
+  }
+});
+
+onBeforeMount(async () => {
   loading.value = true;
   await tasksStore.getTaskById(route.params.id as string);
   await tasksStore.getComments(route.params.id as string);
-  user.value = await authStore.getUserById(tasksStore.currentTask.created_by);
-  assignedUser.value = await authStore.getUserById(
+  user.value = await authStore.getProfileById(
+    tasksStore.currentTask.created_by
+  );
+  assignedUser.value = await authStore.getProfileById(
     tasksStore.currentTask.assigned_to
   );
   status.value = tasksStore.currentTask.status_id;
@@ -200,16 +330,47 @@ onMounted(async () => {
   height: 100%;
 }
 
-.relative {
-  position: relative;
+.active {
+  background-color: #e2e2fc;
+  padding: 0 5px;
 }
 
-.workers-input {
-  max-width: 200px;
+.assigned-select {
+  width: 300px;
 }
 
-.status-select {
-  width: 170px;
+.descr-text {
+  font-family: 'Montserrat';
+  white-space: pre-wrap;
+}
+
+.descr-area {
+  border: none;
+  outline: none;
+}
+
+.paperclip-btn {
+  background-color: #e2e2fc;
+}
+
+.active-title {
+  font-weight: 600;
+}
+
+.comment-input {
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  cursor: text;
+  flex-grow: 1;
+  background-color: rgba(255, 255, 255);
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+  }
+}
+
+.descr {
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+  }
 }
 
 .task-label {
@@ -219,28 +380,21 @@ onMounted(async () => {
   z-index: 1;
 }
 
-.comment-btn {
-  :deep(.q-field__label) {
-    padding-left: 10px;
-  }
-}
-
-.descr-textarea {
-  :deep(.q-field__native) {
-    padding: 10px;
-    resize: none;
-  }
-}
-
-:deep(.q-field__control) {
-  padding-right: 0;
-}
-
 :deep(.q-scrollarea__content) {
   max-width: 100% !important;
 }
 
 .task-button {
   background-color: #d1d0d0;
+}
+
+@media (max-width: 768px) {
+  .component-container {
+    padding-left: 0;
+    padding-right: 0;
+  }
+  .assigned-select {
+    width: 150px;
+  }
 }
 </style>

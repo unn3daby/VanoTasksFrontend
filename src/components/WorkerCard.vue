@@ -1,10 +1,10 @@
 <template>
   <q-card flat>
-    <q-card-section class="row items-center">
-      <q-avatar class="q-mr-md">
+    <q-card-section class="row items-center no-wrap">
+      <q-avatar class="q-mr-md" size="3em">
         <img :src="profile.photo_url || 'src/assets/user.jpg'" alt="" />
       </q-avatar>
-      <div>{{ profile.full_name }}</div>
+      <div class="ellipsis">{{ profile.full_name }}</div>
       <q-space></q-space>
       <slot name="append"></slot>
     </q-card-section>
