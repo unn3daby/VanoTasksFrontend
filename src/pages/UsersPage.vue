@@ -8,7 +8,8 @@
           v-model="search"
           dense
           label="Поиск пользователей"
-          ><template #append>
+        >
+          <template #append>
             <q-icon
               v-if="search !== ''"
               name="bi-x-lg"
@@ -16,8 +17,9 @@
               size="xs"
               class="cursor-pointer q-mr-sm"
             />
-            <q-icon name="bi-search" size="xs" /> </template
-        ></q-input>
+            <q-icon name="bi-search" size="xs" />
+          </template>
+        </q-input>
       </div>
       <q-scroll-area
         visible
@@ -25,15 +27,15 @@
         style="height: calc(100% - 85px); max-width: 100%"
       >
         <WorkerCard
-          v-for="user in authStore.users"
+          v-for="profile in filteredProfiles"
           class="q-mb-md cursor-pointer"
-          :key="user.id"
-          :user-id="user.id"
+          :key="profile.user_id"
+          :user-id="profile.user_id"
           @click="
-            if (authStore.userData.id !== user.id)
+            if (authStore.userData.id !== profile.user_id)
               $router.push({
                 name: 'single-user-page',
-                params: { id: user.id },
+                params: { id: profile.user_id },
               });
             else {
               $router.push({ name: 'account-page' });
@@ -46,16 +48,25 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { useAuthStore } from 'src/stores/authStore';
 import WorkerCard from 'src/components/WorkerCard.vue';
 
 const authStore = useAuthStore();
 
-onMounted(async () => {
-  await authStore.getUsers();
-});
 const search = ref('');
+
+const filteredProfiles = computed(() =>
+  search.value
+    ? authStore.profilesList.filter((item) =>
+        item.full_name.toLowerCase().includes(search.value.toLowerCase())
+      )
+    : authStore.profilesList
+);
+
+onMounted(async () => {
+  await authStore.getAllProfiles();
+});
 </script>
 
 <style scoped lang="scss">
