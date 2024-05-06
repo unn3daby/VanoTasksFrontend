@@ -6,8 +6,21 @@ import { getAPI } from 'src/services/baseApiFabric';
 import { ref, Ref } from 'vue';
 import { CommentModel } from 'src/models/CommentModel';
 import { msApi } from 'src/api/authService';
+import { v4 as uuidv4 } from 'uuid';
 
 export const useTasksStore = defineStore('tasks', () => {
+  const chart: Ref<{
+    open: number;
+    in_progress: number;
+    close: number;
+  } | null> = ref(null);
+
+  const projectChart: Ref<{
+    open: number;
+    in_progress: number;
+    close: number;
+  } | null> = ref(null);
+
   const tasksApi = getAPI(`${import.meta.env.VITE_MS_API}`);
   const paging: Ref<PaginigModel> = ref({} as PaginigModel);
   const tasksArray: Ref<Array<TaskModel>> = ref([]);
@@ -27,6 +40,15 @@ export const useTasksStore = defineStore('tasks', () => {
     }
   };
 
+  const getTasksByUserId = async (userId: number | string) => {
+    try {
+      const { data } = await msApi.get(`/tasks/user_tasks/${userId}`);
+      tasksArray.value = data;
+    } catch (error) {
+      Notification.error('Ошибка');
+    }
+  };
+
   const getTaskById = async (id: number | string) => {
     try {
       const { data } = await msApi.get(`/tasks/${id}`);
@@ -40,6 +62,9 @@ export const useTasksStore = defineStore('tasks', () => {
     try {
       const formData = new FormData();
       for (const key in currentTask.value) {
+        if (currentTask.value[key] instanceof Blob) {
+          formData.append(key, currentTask.value[key], uuidv4());
+        }
         formData.append(key, currentTask.value[key]);
       }
       await msApi.put(`/tasks/${id}`, formData);
@@ -71,6 +96,32 @@ export const useTasksStore = defineStore('tasks', () => {
     }
   };
 
+  const getPieChart = async (userId: number | string) => {
+    try {
+      const { data } = await msApi.get<{
+        open: number;
+        in_progress: number;
+        close: number;
+      }>(`${import.meta.env.VITE_MS_API}/tasks/charts/${userId}`);
+      chart.value = data;
+    } catch (error) {
+      Notification.error('Ошибка');
+    }
+  };
+
+  const getProjectPieChart = async (projectId: number | string) => {
+    try {
+      const { data } = await msApi.get<{
+        open: number;
+        in_progress: number;
+        close: number;
+      }>(`${import.meta.env.VITE_MS_API}/tasks/project/charts/${projectId}`);
+      projectChart.value = data;
+    } catch (error) {
+      Notification.error('Ошибка');
+    }
+  };
+
   const postComment = async (comment_text: string, taskId: number | string) => {
     try {
       await msApi.post(
@@ -88,12 +139,17 @@ export const useTasksStore = defineStore('tasks', () => {
     tasksArray,
     currentTask,
     currentComments,
+    chart,
+    projectChart,
     getTasks,
+    getTasksByUserId,
     putTaskStatus,
     putTaskById,
     getTaskById,
     getComments,
     postComment,
+    getProjectPieChart,
+    getPieChart,
   };
 });
 

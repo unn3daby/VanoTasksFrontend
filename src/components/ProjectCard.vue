@@ -16,7 +16,7 @@
     <q-card-section class="q-py-sm">
       <span class="text-bold">Код проекта:</span> {{ props.data.project_code }}
     </q-card-section>
-    <q-card-section class="q-py-sm">
+    <q-card-section v-if="props.data.created_at" class="q-py-sm">
       <span class="text-bold">Дата создания:</span>
       {{ format(props.data.created_at, 'dd.MM.yyyy HH:mm') }}
     </q-card-section>

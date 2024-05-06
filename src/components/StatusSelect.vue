@@ -8,6 +8,7 @@
     no-caps
     :style="`font-size: ${fz};`"
     unelevated
+    class="no-wrap"
   >
     <q-menu fit :offset="[0, 5]">
       <q-list :style="`font-size: ${fz};`">

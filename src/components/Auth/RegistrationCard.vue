@@ -46,6 +46,7 @@
         unelevated
         color="primary"
         class="full-width submit-button"
+        :disable="passwords[0].value !== passwords[1].value"
         @click="onRegister"
       >
         <span class="text-bold">Зарегистрироваться</span>

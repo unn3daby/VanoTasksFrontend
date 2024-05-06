@@ -1,49 +1,38 @@
 <template>
-  <q-card flat :bordered="props.bordered" class="task-card fit">
-    <q-card-section
-      class="row no-wrap items-center justify-between"
-      :class="{ 'justfy-between': $q.screen.width <= 900 }"
-    >
-      <div class="flex-mobile">
-        <div
-          class="task-id cursor-pointer q-mr-sm"
-          @click="
-            $router.push({
-              name: 'single-task-page',
-              params: { id: data.task_id },
-            })
-          "
-        >
+  <q-card
+    flat
+    :bordered="props.bordered"
+    class="fit"
+    @click="
+      $router.push({
+        name: 'single-task-page',
+        params: { id: data.task_id },
+      })
+    "
+  >
+    <q-card-section class="task-card cursor-pointer">
+      <div
+        class="column items-start justify-center"
+        :class="$q.screen.width >= 330 ? 'self-center' : 'self-start'"
+      >
+        <div class="task-id cursor-pointer">
           <span class="text-grey">ID: {{ data.task_id }}</span>
         </div>
-        <div class="col task-descr q-mb-md">
+        <div class="col ellipsis">
           {{ data.task_name }}
         </div>
       </div>
-      <div
-        :class="{
-          'col-2': $q.screen.width > 900 && $q.screen.width <= 1200,
-          'col-1': $q.screen.width > 1200,
-        }"
-        class="task-project row column justify-center text-grey mobile-none"
-      >
-        <div class="cursor-pointer task-project-name">
-          {{ data.project_name }}
-        </div>
-        <div>
-          {{ new Date(data.created_at).toLocaleDateString() }}
-        </div>
+      <div class="mobile-none self-center ellipsis">
+        <span class="text-grey">Описание: </span>{{ data.description }}
       </div>
       <div
-        :class="{
-          'col-2': $q.screen.width > 900,
-          'col-6': $q.screen.width <= 900,
-        }"
-        class="task-controls flex column self-start"
+        class="task-controls row"
+        :class="$q.screen.width >= 330 ? 'self-center' : 'self-start'"
       >
         <status-select
           class="fit"
           v-model="select"
+          @click.stop
           @update-task-status="updateTaskStatus"
         />
       </div>
@@ -78,18 +67,17 @@ const updateTaskStatus = async (status: number) => {
     color: $primary;
   }
 }
-.flex-mobile {
-  display: flex;
+.task-card {
+  display: grid;
+  grid-template-columns: 20% 1fr 20%;
 }
 
 @media (max-width: 425px) {
   .mobile-none {
     display: none;
   }
-  .flex-mobile {
-    display: flex;
-    flex-direction: column-reverse;
-    justify-content: space-between;
+  .task-card {
+    grid-template-columns: 40% 60%;
   }
 }
 </style>

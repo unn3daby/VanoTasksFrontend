@@ -15,7 +15,7 @@
 
         <div>
           <q-btn @click="isAIOpened = true" icon="bi-magic" flat>
-            <q-menu :offset="[0, 20]">
+            <q-menu :offset="[0, 20]" class="myfull-width">
               <ChatTooltip />
             </q-menu>
             <q-tooltip>Спросить у ИИ</q-tooltip>
@@ -35,7 +35,7 @@
       class="bg-white"
     >
       <q-scroll-area
-        class="fit q-pl-md"
+        class="fit q-pl-md mobile-padding"
         :horizontal-thumb-style="{ opacity: '0' }"
       >
         <q-list padding class="q-pt-none full-height">
@@ -88,13 +88,6 @@
           </q-item>
         </q-list>
       </q-scroll-area>
-      <q-item clickable v-ripple class="settings rounded-borders">
-        <q-item-section avatar>
-          <q-icon name="bi-gear" />
-        </q-item-section>
-
-        <q-item-section> Настройки </q-item-section></q-item
-      >
     </q-drawer>
 
     <q-page-container class="rounded-borders full-height">
@@ -146,5 +139,14 @@ onMounted(async () => {
   width: 92%;
   bottom: 16px;
   left: 16px;
+}
+
+@media (max-width: 400px) {
+  .mobile-padding {
+    padding: 10px;
+  }
+  .myfull-width {
+    width: 100vw;
+  }
 }
 </style>

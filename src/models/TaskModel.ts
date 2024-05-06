@@ -9,6 +9,8 @@ interface TaskModel {
   task_id: number;
   project_name: string;
   task_name: string;
+  file_url: string;
+  photo: Blob;
 }
 
 interface SingleTaskModel {
@@ -22,6 +24,8 @@ interface SingleTaskModel {
   created_at: string;
   due_date: string;
   project_name: string;
+  file_url: string;
+  photo: Blob;
 }
 
 export type { TaskModel, SingleTaskModel };

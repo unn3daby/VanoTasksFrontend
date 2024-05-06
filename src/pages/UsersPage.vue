@@ -30,7 +30,14 @@
           :key="user.id"
           :user-id="user.id"
           @click="
-            $router.push({ name: 'single-user-page', params: { id: user.id } })
+            if (authStore.userData.id !== user.id)
+              $router.push({
+                name: 'single-user-page',
+                params: { id: user.id },
+              });
+            else {
+              $router.push({ name: 'account-page' });
+            }
           "
         ></WorkerCard>
       </q-scroll-area>

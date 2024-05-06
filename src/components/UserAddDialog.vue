@@ -1,6 +1,6 @@
 <template>
   <q-dialog v-model="modelValue" @show="authStore.getAllProfiles()">
-    <q-card style="min-width: 90vw">
+    <q-card class="user-dialog">
       <q-card-section>
         <q-select
           label="Добавить пользователя"
@@ -55,4 +55,14 @@ const authStore = useAuthStore();
 const projetcsStore = useProjectsStore();
 </script>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+.user-dialog {
+  min-width: 50%;
+}
+
+@media (max-width: 425px) {
+  .user-dialog {
+    min-width: 90vw;
+  }
+}
+</style>

@@ -3,6 +3,7 @@ import { PaginigModel } from 'src/models/APIModel';
 import Notification from 'src/utils/Notification';
 import { UserModel } from 'src/models/UserModel';
 import {
+  ProjectCreationModel,
   ProjectModel,
   ProjectResponseModel,
   SingleProjectModel,
@@ -35,6 +36,25 @@ export const useProjectsStore = defineStore('projects', () => {
       projectsArray.value = data.items;
       const { page, pages, size, total } = data;
       paging.value = { page, pages, size, total };
+    } catch (error) {
+      Notification.error('Ошибка');
+    }
+  };
+
+  const getProjectsByUserId = async (userId: number | string) => {
+    try {
+      const { data } = await msApi.get<Array<ProjectModel>>(
+        `/projects/user_projects/${userId}`
+      );
+      projectsArray.value = data;
+    } catch (error) {
+      Notification.error('Ошибка');
+    }
+  };
+
+  const postProject = async (payload: ProjectCreationModel) => {
+    try {
+      await msApi.post<ProjectResponseModel>('/projects', payload);
     } catch (error) {
       Notification.error('Ошибка');
     }
@@ -88,6 +108,18 @@ export const useProjectsStore = defineStore('projects', () => {
     }
   };
 
+  const putProjectById = async (
+    projectId: number | string,
+    payload: ProjectCreationModel
+  ) => {
+    try {
+      await msApi.put<Array<UserModel>>(`/projects/${projectId}`, payload);
+      Notification.success('Проект успешно обновлен');
+    } catch (error) {
+      Notification.error('Ошибка');
+    }
+  };
+
   return {
     paging,
     projectsArray,
@@ -99,6 +131,9 @@ export const useProjectsStore = defineStore('projects', () => {
     getTaskByProjectId,
     postProjectsUsersById,
     getProjects,
+    getProjectsByUserId,
+    postProject,
+    putProjectById,
   };
 });
 

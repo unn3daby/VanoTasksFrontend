@@ -1,7 +1,10 @@
 <template>
-  <q-card>
+  <q-card :class="{ 'full-width': $q.screen.width < 400 }">
     <q-card-section>
-      <div class="rounded-borders chat-window q-pa-md">
+      <div
+        class="chat-window rounded-borders q-pa-md"
+        :class="{ mobile: isMobile }"
+      >
         {{ response }}
         <q-inner-loading :showing="loading">
           <q-spinner size="50px" color="primary" />
@@ -15,6 +18,7 @@
         @keydown.enter="makeQuestion"
         outlined
         dense
+        class="q-mt-md"
       >
         <template #append>
           <q-btn
@@ -31,11 +35,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
-import { useAiStore } from 'src/stores/aiStore.ts';
+import { ref, computed } from 'vue';
+import { useAiStore } from 'src/stores/aiStore';
 
 const aiStore = useAiStore();
-const blackText = ref(false);
 const search = ref('');
 const response = ref('Спросите меня о чем угодно!');
 const loading = ref(false);
@@ -47,6 +50,10 @@ const makeQuestion = async () => {
   loading.value = false;
   search.value = '';
 };
+
+const isMobile = computed(() => {
+  return window.innerWidth <= 425;
+});
 </script>
 
 <style lang="scss" scoped>
@@ -54,5 +61,9 @@ const makeQuestion = async () => {
   border: 1px solid rgba(0, 0, 0, 0.1);
   min-height: 200px;
   min-width: 300px;
+}
+
+.mobile {
+  min-width: unset;
 }
 </style>

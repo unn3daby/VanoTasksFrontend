@@ -1,18 +1,18 @@
 <template>
   <q-dialog v-model="isDialogVisible">
     <q-card style="width: 90vw; max-width: 700px">
-      <q-card-section class="text-h6"> Создание задачи </q-card-section>
+      <q-card-section class="text-h6"> Создание Проекта </q-card-section>
       <q-card-section class="q-pt-none">
         <q-input
           dense
-          v-model="newData.task_name"
-          label="Имя задачи"
+          v-model="newData.project_name"
+          label="Имя проекта"
           outlined
         ></q-input
       ></q-card-section>
       <q-card-section>
         <q-input
-          label="Описание задачи"
+          label="Описание проекта"
           dense
           v-model="newData.description"
           outlined
@@ -20,33 +20,18 @@
       ></q-card-section>
       <q-card-section>
         <q-input
-          label="Исполнитель"
+          label="Код проекта"
           dense
-          v-model="newData.assigned_to"
-          outlined
-        ></q-input
-      ></q-card-section>
-      <q-card-section>
-        <q-input
-          label="Проект"
-          dense
-          v-model="newData.project_id"
+          v-model="newData.project_code"
           outlined
         ></q-input
       ></q-card-section>
       <q-card-section class="row justify-end">
         <q-btn
           @click="
-            async () => {
-              try {
-                await msApi.post(`${ep}/tasks`, newData);
-                Notification.success('Успешно создано');
-                projectsStore.getTaskByProjectId($route.params.id as string);
-                isDialogVisible = false;
-              } catch (error) {
-                Notification.error('Ошибка');
-              }
-            }
+            projectsStore.postProject(newData);
+            isDialogVisible = false;
+            emits('add-new-project');
           "
           unelevated
           color="primary"
@@ -59,18 +44,20 @@
 
 <script setup lang="ts">
 import { reactive } from 'vue';
-import Notification from 'src/utils/Notification';
 import { useProjectsStore } from 'src/stores/projectsStore';
-import { msApi } from 'src/api/authService';
+
+interface Emits {
+  (name: 'add-new-project'): void;
+}
+
+const emits = defineEmits<Emits>();
 
 const projectsStore = useProjectsStore();
 const isDialogVisible = defineModel<boolean>({ required: true });
-const ep = import.meta.env.VITE_MS_API;
 const newData = reactive({
-  task_name: '',
+  project_name: '',
   description: '',
-  assigned_to: '',
-  project_id: '',
+  project_code: '',
 });
 </script>
 

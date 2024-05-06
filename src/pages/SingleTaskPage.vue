@@ -53,9 +53,17 @@
                 no-caps
                 unelevated
                 icon="bi-paperclip"
+                @click="fileInput?.click()"
               >
                 Прикрепить
               </q-btn>
+              <input
+                type="file"
+                accept="image/png, image/jpeg"
+                ref="fileInput"
+                style="display: none"
+                @change="updateTask"
+              />
             </div>
           </div>
           <div class="col-sm-4 col-12 q-mb-md">
@@ -180,6 +188,20 @@
             </div>
           </div>
         </div>
+        <div
+          class="q-mt-md column q-mb-lg"
+          v-if="tasksStore.currentTask.file_url"
+        >
+          <div class="text-bold">Файл:</div>
+          <div class="cursor-pointer q-pt-sm">
+            <q-icon
+              color="primary"
+              size="xl"
+              name="bi-file-earmark-arrow-down"
+              @click="downloadFile"
+            ></q-icon>
+          </div>
+        </div>
         <div class="row">
           <div class="col-sm-6 col-12">
             <div class="active-title q-mb-sm">Активность</div>
@@ -263,6 +285,7 @@ const route = useRoute();
 const authStore = useAuthStore();
 const tasksStore = useTasksStore();
 const { currentTask } = storeToRefs(tasksStore);
+const fileInput = ref<null | HTMLInputElement>();
 
 watch(
   () => tasksStore.currentTask,
@@ -290,6 +313,20 @@ const onAssignMe = async () => {
   );
 };
 
+const downloadFile = () => {
+  try {
+    const a = document.createElement('a');
+    a.href = tasksStore.currentTask.file_url;
+    a.target = '_blank';
+    a.download = 'file_name';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  } catch (error) {
+    console.error('Ошибка скачивания файла:', error);
+  }
+};
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const updateName = async (scope: any) => {
   if (scope.value) {
@@ -298,9 +335,15 @@ const updateName = async (scope: any) => {
   }
 };
 
-const updateTask = async () => {
+const updateTask = async (event?: Event) => {
+  if (event && event?.target?.files?.length) {
+    const file = event.target.files[0];
+    const blob = new Blob([file.value], { type: file.type });
+    tasksStore.currentTask.photo = blob;
+  }
   await tasksStore.putTaskById(route.params.id as string);
   isDescrAreaVisible.value = false;
+  await tasksStore.getTaskById(route.params.id as string);
 };
 
 watch(isChangeAssigned, () => {
