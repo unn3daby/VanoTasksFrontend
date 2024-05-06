@@ -29,9 +29,10 @@
       <q-card-section class="row justify-end">
         <q-btn
           @click="
-            projectsStore.postProject(newData);
-            isDialogVisible = false;
-            emits('add-new-project');
+            projectsStore.postProject(newData).then(() => {
+              isDialogVisible = false;
+              emits('add-new-project');
+            })
           "
           unelevated
           color="primary"
