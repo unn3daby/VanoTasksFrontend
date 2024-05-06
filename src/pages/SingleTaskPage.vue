@@ -59,7 +59,6 @@
               </q-btn>
               <input
                 type="file"
-                accept="image/png, image/jpeg"
                 ref="fileInput"
                 style="display: none"
                 @change="updateTask"
@@ -317,8 +316,6 @@ const downloadFile = () => {
   try {
     const a = document.createElement('a');
     a.href = tasksStore.currentTask.file_url;
-    a.target = '_blank';
-    a.download = 'file_name';
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -336,13 +333,51 @@ const updateName = async (scope: any) => {
 };
 
 const updateTask = async (event?: Event) => {
-  if (event && event?.target?.files?.length) {
+  if (event && event.target?.files?.length) {
     const file = event.target.files[0];
-    const blob = new Blob([file.value], { type: file.type });
-    tasksStore.currentTask.photo = blob;
+
+    // Создаем объект FileReader для чтения содержимого файла
+    const reader = new FileReader();
+
+    // Создаем обещание для обработки завершения чтения файла
+    const fileReadPromise = new Promise((resolve, reject) => {
+      // Устанавливаем обработчик события для завершения чтения файла
+      reader.onload = () => {
+        // Разрешаем обещание с содержимым файла
+        resolve(reader.result);
+      };
+
+      // Устанавливаем обработчик события для обработки ошибок чтения файла
+      reader.onerror = () => {
+        // Отклоняем обещание с ошибкой
+        reject(reader.error);
+      };
+    });
+
+    // Читаем содержимое файла
+    reader.readAsArrayBuffer(file);
+
+    try {
+      // Ожидаем завершения чтения файла
+      const fileContent = await fileReadPromise;
+
+      // Создаем Blob из содержимого файла
+      const blob = new Blob([fileContent], { type: file.type });
+
+      // Устанавливаем Blob в свойство photo текущей задачи
+      tasksStore.currentTask.photo = { file: blob, filename: file.name };
+    } catch (error) {
+      console.error('Ошибка при чтении файла:', error);
+    }
   }
+
+  // Отправляем обновленную задачу на сервер
   await tasksStore.putTaskById(route.params.id as string);
+
+  // Скрываем область описания задачи
   isDescrAreaVisible.value = false;
+
+  // Получаем обновленные данные задачи с сервера
   await tasksStore.getTaskById(route.params.id as string);
 };
 

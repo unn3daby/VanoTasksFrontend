@@ -45,7 +45,7 @@
             :to="{ name: 'account-page' }"
           >
             <q-avatar>
-              <img :src="userProfile.photo_url || 'src/assets/user.jpg'" />
+              <img :src="authStore.profile.photo_url || 'src/assets/user.jpg'" />
             </q-avatar>
             <span class="q-ml-md">{{ authStore.userData.username }}</span>
           </q-item>
@@ -100,14 +100,12 @@
 import { onMounted, ref } from 'vue';
 import { useAuthStore } from 'src/stores/authStore';
 import { useRouter } from 'vue-router';
-import { ProfileModel } from 'src/models/ProfileModel';
 import ChatTooltip from 'components/ChatTooltip.vue';
 
 const router = useRouter();
 
 const authStore = useAuthStore();
 const isAIOpened = ref(false);
-const userProfile = ref({} as ProfileModel);
 
 const leftDrawerOpen = ref(false);
 
@@ -121,7 +119,7 @@ const onLogout = async () => {
 };
 
 onMounted(async () => {
-  userProfile.value = await authStore.getProfileById(authStore.userData.id);
+  await authStore.getProfileById(authStore.userData.id);
 });
 </script>
 <style scoped lang="scss">

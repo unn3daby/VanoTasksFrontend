@@ -47,6 +47,7 @@ import { useTasksStore } from 'src/stores/tasksStore';
 import { TaskModel } from 'src/models/TaskModel';
 interface Props {
   bordered?: boolean;
+  userId?: number | string;
   data: TaskModel;
 }
 const tasksStore = useTasksStore();
@@ -57,6 +58,9 @@ const select = ref(props.data.status_id);
 
 const updateTaskStatus = async (status: number) => {
   await tasksStore.putTaskStatus(props.data.task_id, status);
+  if (props.userId) {
+    await tasksStore.getPieChart(props.userId);
+  }
 };
 </script>
 

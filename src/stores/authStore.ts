@@ -42,6 +42,9 @@ export const useAuthStore = defineStore('auth', {
         throw new Error(`${error}`);
       }
     },
+    getProfileInstace() {
+      return this.profile;
+    },
     async logout() {
       try {
         await msApi.post<UserModel>('/auth/logout');

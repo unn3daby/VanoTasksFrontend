@@ -1,5 +1,11 @@
 <template>
-  <q-card flat>
+  <q-card
+    flat
+    class="cursor-pointer"
+    @click="
+      $router.push({ name: 'single-user-page', params: { id: props.userId } })
+    "
+  >
     <q-card-section class="row items-center no-wrap">
       <q-avatar class="q-mr-md" size="3em">
         <img :src="profile.photo_url || 'src/assets/user.jpg'" alt="" />

@@ -42,11 +42,10 @@
                 :class="{ 'full-width': $q.screen.width < 400 }"
                 v-model="authStore.profile.full_name"
                 auto-save
-                v-slot="scope"
               >
                 <q-input
                   class="col-12"
-                  v-model="scope.value"
+                  v-model="authStore.profile.full_name"
                   dense
                   autofocus
                   counter
@@ -96,6 +95,7 @@
             v-for="task in tasksStore.tasksArray"
             :key="task.task_id"
             :data="task"
+            :user-id="authStore.userData.id"
             class="q-mb-md"
           />
         </div>
@@ -108,7 +108,6 @@
 import { computed, onMounted, ref } from 'vue';
 import PieChart from 'src/components/PieChart.vue';
 import TaskCard from 'src/components/Tasks/TaskCard.vue';
-import { v4 as uuidv4 } from 'uuid';
 import { useTasksStore } from 'src/stores/tasksStore';
 import { useAuthStore } from 'src/stores/authStore';
 const loading = ref(false);
@@ -127,26 +126,46 @@ const openFileInput = () => {
   fileInput.value?.click();
 };
 
-const updateProfile = async (event: HTMLInputElement) => {
+const updateProfile = async (event: Event) => {
   const formData = new FormData();
-  if (event.target.files?.length) {
+  if (event.target?.files?.length) {
     const file = event.target.files[0];
-    const blob = new Blob([file.value], { type: file.type });
-    formData.append('photo', blob, uuidv4());
-    await authStore.putUserProfile(
-      {
-        user_id: authStore.userData.id,
-        full_name: authStore.profile.full_name,
-      },
-      formData
-    );
-    authStore.getProfile();
+    const reader = new FileReader();
+
+    const fileReadPromise = new Promise((resolve, reject) => {
+      reader.onload = () => {
+        resolve(reader.result);
+      };
+      reader.onerror = () => {
+        reject(reader.error);
+      };
+    });
+
+    reader.readAsArrayBuffer(file);
+
+    try {
+      const fileContent = await fileReadPromise;
+      const blob = new Blob([fileContent], { type: file.type });
+      formData.append('photo', blob, file.name);
+      await authStore.putUserProfile(
+        {
+          user_id: authStore.userData.id,
+          full_name: authStore.profile.full_name,
+        },
+        formData
+      );
+      await authStore.getProfile();
+      await tasksStore.getPieChart(authStore.userData.id);
+    } catch (error) {
+      console.error('Ошибка при чтении файла:', error);
+    }
   } else {
     await authStore.putUserProfile({
       user_id: authStore.userData.id,
       full_name: authStore.profile.full_name,
     });
-    authStore.getProfile();
+    await authStore.getProfile();
+    await tasksStore.getPieChart(authStore.userData.id);
   }
 };
 

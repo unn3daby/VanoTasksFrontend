@@ -62,10 +62,16 @@ export const useTasksStore = defineStore('tasks', () => {
     try {
       const formData = new FormData();
       for (const key in currentTask.value) {
-        if (currentTask.value[key] instanceof Blob) {
-          formData.append(key, currentTask.value[key], uuidv4());
+        if (currentTask.value[key]?.file) {
+          formData.append(
+            key,
+            currentTask.value[key].file,
+            currentTask.value[key].filename
+          );
         }
-        formData.append(key, currentTask.value[key]);
+        if (key !== 'photo') {
+          formData.append(key, currentTask.value[key]);
+        }
       }
       await msApi.put(`/tasks/${id}`, formData);
       Notification.success('Задача обновлена');
