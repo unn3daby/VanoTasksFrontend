@@ -64,6 +64,24 @@
                 @change="updateTask"
               />
             </div>
+            <div class="buttons q-mb-md row items-center">
+              <DateTImePicker
+                v-if="tasksStore.currentTask.due_date"
+                v-model="tasksStore.currentTask.due_date"
+                style="width: 250px"
+              />
+              <div class="q-ml-sm">
+                <q-btn
+                  round
+                  flat
+                  size="md"
+                  @click="
+                    tasksStore.putTaskById(tasksStore.currentTask.task_id)
+                  "
+                  icon="mdi-check"
+                />
+              </div>
+            </div>
           </div>
           <div class="col-sm-4 col-12 q-mb-md">
             <status-select
@@ -261,13 +279,15 @@
 
 <script setup lang="ts">
 import StatusSelect from 'src/components/StatusSelect.vue';
-import { Ref, onBeforeMount, ref, watch } from 'vue';
+import { Ref, computed, onBeforeMount, ref, watch } from 'vue';
 import { useTasksStore } from 'src/stores/tasksStore';
 import { useAuthStore } from 'src/stores/authStore';
 import { useRoute } from 'vue-router';
 import CommentCard from 'components/CommentCard.vue';
 import { storeToRefs } from 'pinia';
 import { ProfileModel } from 'src/models/ProfileModel';
+import formatDate from 'src/utils/formatDate';
+import DateTImePicker from 'src/components/DateTImePicker.vue';
 
 const user: Ref<ProfileModel> = ref({} as ProfileModel);
 const assignedUser: Ref<ProfileModel> = ref({} as ProfileModel);
@@ -285,6 +305,15 @@ const authStore = useAuthStore();
 const tasksStore = useTasksStore();
 const { currentTask } = storeToRefs(tasksStore);
 const fileInput = ref<null | HTMLInputElement>();
+
+const dueDate = computed({
+  get() {
+    return formatDate(tasksStore.currentTask.due_date);
+  },
+  set(item: string) {
+    tasksStore.currentTask.due_date = item;
+  },
+});
 
 watch(
   () => tasksStore.currentTask,

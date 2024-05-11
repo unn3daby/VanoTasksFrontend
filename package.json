@@ -19,6 +19,7 @@
     "@capacitor/cli": "^5.0.0",
     "@capacitor/core": "^5.0.0",
     "@quasar/extras": "^1.16.4",
+    "@vueuse/core": "^10.9.0",
     "axios": "^1.2.1",
     "chart.js": "^4.4.2",
     "date-fns": "^3.6.0",

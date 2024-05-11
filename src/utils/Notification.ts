@@ -17,4 +17,12 @@ export default class Notification {
       position: 'bottom-right',
     });
   }
+  static warning(message: string) {
+    Notify.create({
+      progress: true,
+      type: 'warning',
+      message: message,
+      position: 'bottom-right',
+    });
+  }
 }

@@ -6,7 +6,6 @@ import { getAPI } from 'src/services/baseApiFabric';
 import { ref, Ref } from 'vue';
 import { CommentModel } from 'src/models/CommentModel';
 import { msApi } from 'src/api/authService';
-import { v4 as uuidv4 } from 'uuid';
 
 export const useTasksStore = defineStore('tasks', () => {
   const chart: Ref<{
@@ -140,6 +139,15 @@ export const useTasksStore = defineStore('tasks', () => {
     }
   };
 
+  const getDeadlines = async (userId: number | string) => {
+    try {
+      const { data } = await msApi.get<TaskModel[]>(
+        `${import.meta.env.VITE_MS_API}/tasks/tasks_one_hour_left/${userId}`
+      );
+      return data;
+    } catch (error) {}
+  };
+
   return {
     tasksApi,
     tasksArray,
@@ -155,6 +163,7 @@ export const useTasksStore = defineStore('tasks', () => {
     getComments,
     postComment,
     getProjectPieChart,
+    getDeadlines,
     getPieChart,
   };
 });
