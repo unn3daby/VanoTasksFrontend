@@ -18,21 +18,27 @@
           <q-btn
             unelevated
             color="primary"
-            @click="() => {
-            try {
-              if (selectValue){
-                projetcsStore.postProjectsUsersById(
-                  $route.params.id as string, selectValue?.user_id
-                );
-                selectValue = null;
-                modelValue = false;
+            @click="
+              async () => {
+                try {
+                  if (selectValue) {
+                    await projetcsStore.postProjectsUsersById(
+                      $route.params.id as string,
+                      selectValue?.user_id
+                    );
+                    selectValue = null;
+                    await projetcsStore.getProjectUsersById(
+                      $route.params.id as string
+                    );
+                    modelValue = false;
+                  }
+                } catch (error) {
+                  if (typeof error === 'string') {
+                    Notification.error(error);
+                  }
+                }
               }
-            } catch (error) {
-              if (typeof error === 'string') {
-                Notification.error(error)
-              }
-            }
-            }"
+            "
             >Добавить
           </q-btn>
         </div>

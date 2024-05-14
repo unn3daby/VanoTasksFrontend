@@ -176,7 +176,7 @@
                   />
                   <div
                     class="flex items-center justify-center text-grey q-mt-lg"
-                    v-if="!currentProjectTasks.length"
+                    v-if="!filteredUsers.length"
                   >
                     Список пуст
                   </div>

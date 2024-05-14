@@ -9,7 +9,7 @@ export const useAiStore = defineStore('ai', {
     async makeQuestion(question: string) {
       try {
         const { data } = await msApi.post<{ answer: string }>(
-          '/gigachat/answer',
+          '/gigachat/answer/',
           {},
           { params: { question } }
         );

@@ -67,6 +67,7 @@ import { useRoute } from 'vue-router';
 import { msApi } from 'src/api/authService';
 import { useTasksStore } from 'src/stores/tasksStore';
 import { useAuthStore } from 'src/stores/authStore';
+import { AxiosError } from 'axios';
 
 const route = useRoute();
 
@@ -83,7 +84,8 @@ const createTask = async () => {
     formData.append('description', newData.description);
     formData.append('assigned_to', newData.assigned_to);
     formData.append('project_id', newData.project_id);
-    await msApi.post(`${ep}/tasks`, formData);
+    console.log(123123123);
+    await msApi.post(`${ep}/tasks/`, formData);
     Notification.success('Успешно создано');
     if (route.params.id) {
       projectsStore.getTaskByProjectId(route.params.id as string);
@@ -92,7 +94,9 @@ const createTask = async () => {
     }
     isDialogVisible.value = false;
   } catch (error) {
-    Notification.error('Ошибка');
+    if (error instanceof AxiosError) {
+      Notification.error('Ошибка');
+    }
   }
 };
 

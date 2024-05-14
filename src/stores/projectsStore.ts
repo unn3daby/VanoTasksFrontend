@@ -54,7 +54,8 @@ export const useProjectsStore = defineStore('projects', () => {
 
   const postProject = async (payload: ProjectCreationModel) => {
     try {
-      await msApi.post<ProjectResponseModel>('/projects', payload);
+      await msApi.post<ProjectResponseModel>('/projects/', payload);
+      Notification.success('Проект создан');
     } catch (error) {
       Notification.error('Ошибка');
     }
@@ -72,7 +73,7 @@ export const useProjectsStore = defineStore('projects', () => {
   const getTaskByProjectId = async (projectId: number | string) => {
     try {
       const { data } = await msApi.get<Array<TaskModel>>(
-        `/tasks/project_tasks/${projectId}`
+        `/tasks/project_tasks/${projectId}/`
       );
       currentProjectTasks.value = data;
     } catch (error) {
